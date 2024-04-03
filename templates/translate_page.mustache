@@ -53,11 +53,6 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
     "charcountspaces": 25
   }
 }}
-<!--label for="translation-context"
->Context</label
->
-<textarea id="translation-context" width="800px" /-->
-
 <div class="text-right">
     <a id="local_coursetranslator__settings"
        role="button" class="link link-underline" data-toggle="collapse"
@@ -65,7 +60,6 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
         <i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i> {{#str}}t_seeSetting,local_coursetranslator{{/str}}
     </a>
 </div>
-
 <div class="container-fluid collapse card bg-primary-light" id="collapseExample">
     <div class="text-right">
         <i class="fa fa-question-circle" aria-hidden="true"></i>
@@ -73,8 +67,6 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
             t_deeplapidoc,local_coursetranslator{{/str}}</a>
     </div>
     <div class="row py-3">
-
-
         <div class="col-2" id="local_coursetranslator__formality">
             {{#str}}t_formality,local_coursetranslator{{/str}}
             <div class="custom-control custom-radio">
@@ -97,7 +89,6 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                 <input type="radio" value="prefer_more" id="formality5" name="local-coursetranslator/formality" class="custom-control-input">
                 <label class="custom-control-label" for="formality5">{{#str}}t_formality_prefer_more,local_coursetranslator{{/str}}</label>
             </div>
-
         </div>
         <div class="col-4">
             <div id="local_coursetranslator__splitsentences">
@@ -126,18 +117,15 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
         <div class="col-6" id="local_coursetranslator__glossarycontext">
-            <label class="" for="glossary_id">{{#str}}t_glossaryid,local_coursetranslator{{/str}}</label>
+            <label class="" for="local_coursetranslator__glossary">{{#str}}t_glossaryid,local_coursetranslator{{/str}}</label>
             <input type="text" class="w-50 form-control mb-2 mr-sm-2" id="local_coursetranslator__glossary"
                    placeholder="{{#str}}t_glossaryid_placeholder,local_coursetranslator{{/str}}"
                    data-id="local-coursetranslator/glossary_id"/>
 
-            <label for="context">{{#str}}t_contextDeepl,local_coursetranslator{{/str}}</label>
+            <label for="local_coursetranslator__context">{{#str}}t_contextDeepl,local_coursetranslator{{/str}}</label>
             <textarea class="form-control" id="local_coursetranslator__context" data-id="local-coursetranslator/context" rows="3"
                       placeholder="{{#str}}t_contextDeeplPlaceholder,local_coursetranslator{{/str}}"></textarea>
-
         </div>
-
-
     </div>
     <hr class="hr hr-blurry"/>
     <div class="row py-3" id="local_coursetranslator__tags">
@@ -148,7 +136,6 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                     <input id="tag_handling" class="custom-control-input" type="checkbox" data-id="local-coursetranslator/tag_handling" checked>
                     <label class="custom-control-label" for="tag_handling">&nbsp;HTML</label></div>
             </div>
-
             <div class="custom-control custom-switch mt-3" id="local_coursetranslator__outilinedetection">
                 <input id="outline_detection" class="custom-control-input" type="checkbox" data-id="local-coursetranslator/outline_detection">
                 <label class="custom-control-label" for="outline_detection">{{#str}}t_outlinedetection,local_coursetranslator{{/str}}</label>
@@ -158,11 +145,8 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                 <textarea class="form-control" id="ignore_tags" data-id="local-coursetranslator/ignore_tags"
                           placeholder="{{#str}}t_ignoretags,local_coursetranslator{{/str}}"></textarea>
             </div>
-
         </div>
         <div class="col-7 py-3">
-
-
             <div class="col" id="local_coursetranslator__tagsnosplitting">
                 <label for="non_splitting_tags">{{#str}}t_nonsplittingtags,local_coursetranslator{{/str}}</label>
                 <textarea class="form-control" id="non_splitting_tags" data-id="local-coursetranslator/non_splitting_tags"
@@ -170,10 +154,8 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
             <div class="col" id="local_coursetranslator__tagssplitting"><label for="splitting_tags">{{#str}}t_splittingtags,local_coursetranslator{{/str}}</label>
                 <textarea class="form-control" id="splitting_tags" data-id="local-coursetranslator/splitting_tags"
                           placeholder="{{#str}}t_tagsplaceholder,local_coursetranslator{{/str}}"></textarea></div>
-
         </div>
     </div>
-
 </div>
 <div class="container-fluid">
     <div class="row py-1" id="local_coursetranslator__sourcetarget">
@@ -205,9 +187,7 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
             </select>
         </div>
         <div class="col-1">&nbsp;</div>
-
     </div>
-
 </div>
 <div class="bg-secondary container-fluid sticky-top sticky-offset" id="local-coursetranslator-translate-header">
     <div class="row pl-5 pt-2 pb-0" id="local-coursetranslator-translate-header-filter">
@@ -244,22 +224,18 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                         aria-label="{{#str}}t_selectall,local_coursetranslator{{/str}}"
                         title="{{#str}}t_selectall,local_coursetranslator{{/str}}"
                         name="select-all"
-
-                        disabled
-                />
+                        id="select-all"
+                        disabled/>
                 <label class="form-check-label" for="select-all">
                     {{#str}}t_selectall,local_coursetranslator{{/str}}
                 </label>
             </div>
         </div>
-
         <div class="col-5">
             {{#str}}t_source_text,local_coursetranslator, {{ current_lang }} {{/str}}
         </div>
-
         <div class="col-5 px-0">
             {{#str}}t_translation,local_coursetranslator, {{ target_lang }} {{/str}}
-
         </div>
         <div class="col-1 px-0">
             <div class="text-center">
@@ -269,14 +245,12 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                         class="p-1 btn btn-primary local-coursetranslator__autotranslate-btn"
                         data-action="local-coursetranslator/autotranslate-btn"
                         disabled
-                >
-                    {{#str}}t_autotranslate,local_coursetranslator{{/str}}
+                >{{#str}}t_autotranslate,local_coursetranslator{{/str}}
                 </button>
             </div>
         </div>
     </div>
 </div>
-
 {{{mform}}}
 <button
         id="local-coursetranslator-translate-header-saveallbutton"
