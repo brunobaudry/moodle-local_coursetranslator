@@ -225,7 +225,7 @@ class translate_form extends moodleform {
                 role='status' aria-disabled='true'><i class='fa'
                 ></i></span>";
         // Status surrounding div.
-        $statusdiv = "<div class='col-1 align-content-center'
+        $statusdiv = "<div class='col-1 text-center'
             data-key-validator='$key'>$savetogglebtn</div>";
         // Column 3 Layout.
         $mform->addElement('html', $translatededitor);

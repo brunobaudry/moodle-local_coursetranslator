@@ -48,7 +48,7 @@ $string['t_select_target_language'] = 'Target language {mlang XX}';
 $string['t_word_count'] = '{$a} words';
 $string['t_char_count'] = '{$a} characters';
 $string['t_word_count_sentence'] =
-        'Total {$a->wordcount} words, {$a->charcount} characters ({$a->charcountspaces} chars including spaces)';
+        'Total <span id="local_coursetranslator__wc">{$a->wordcount}</span> words, <span id="local_coursetranslator__csc">{$a->charcount}</span> characters (<span id="local_coursetranslator__sc">{$a->charcountspaces}</span> chars including spaces)';
 $string['t_warningsource'] =
         'Watch out ! The current source language &quot;{$a}&quot; is already as a multilang tag along side with the fallback tag &quot;OTHER&quot;. Note that both will be merge as the &quot;OTHER&quot; multilang tag.';
 $string['t_char_count_spaces'] = '({$a} char including spaces)';
@@ -56,8 +56,9 @@ $string['t_autotranslate'] = 'Translate';
 $string['t_source_text'] = 'Source lang: {$a}';
 $string['t_translation'] = 'Target lang: {$a}';
 $string['t_autosaved'] = 'Saved!';
-$string['t_selectall'] = 'Select All';
+$string['t_selectall'] = 'All';
 $string['t_saveall'] = 'Save&nbsp;all';
+$string['t_saveallexplain'] = 'Batch save to database all selected translations.';
 $string['t_status'] = 'Status';
 $string['t_other'] = 'Other (other)';
 $string['t_multiplemlang'] =
@@ -69,10 +70,10 @@ $string['t_canttranslate'] = 'Cannot translate \'{$a}\' to \'{$a}\', please sele
 
 $string['t_edit'] = 'Edit source in place';
 $string['t_viewsource'] = 'Check multilingual content.';
-$string['t_seeSetting'] = 'more Deepl\'s settings';
+$string['t_seeSetting'] = 'Advanced Deepl settings';
 $string['t_splitsentences'] = 'Split sentences?';
 $string['t_splitsentences_0'] = 'no splitting at all';
-$string['t_splitsentences_1'] = 'splits on punctuation and on newlines (default)';
+$string['t_splitsentences_1'] = 'splits on punctuation and on newlines';
 $string['t_splitsentences_nonewlines'] = 'splits on punctuation only, ignoring newlines';
 $string['t_preserveformatting'] = 'Preserve formatting';
 $string['t_formality'] = 'Formality';
@@ -84,8 +85,8 @@ $string['t_formality_prefer_less'] = 'prefer less';
 $string['t_glossaryid'] = 'Glossary id';
 $string['t_glossaryid_placeholder'] = 'Glossary id should you have one...';
 $string['t_taghandling'] = 'Handle tags as : ';
-$string['t_outlinedetection'] = 'Outline detection';
-$string['t_tagsplaceholder'] = 'List all tags (separate tag with comma ",")';
+$string['t_outlinedetection'] = 'XML Outline detection';
+$string['t_tagsplaceholder'] = 'List all tags (separate tag with comma &quot;,&quot;)';
 $string['t_nonsplittingtags'] = 'Non splitting tags';
 $string['t_splittingtags'] = 'Splitting tags';
 $string['t_ignoretags'] = 'Tags to ignore';

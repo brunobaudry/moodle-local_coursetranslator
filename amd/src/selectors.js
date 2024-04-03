@@ -49,6 +49,9 @@ export default {
         failed: 'local-coursetranslator/failed',
         success: 'local-coursetranslator/success',
         saved: 'local-coursetranslator/saved',
+        wordcount: '#local_coursetranslator__wc',
+        charNumWithOutSpace: '#local_coursetranslator__sc',
+        charNumWithSpace: '#local_coursetranslator__csc',
     },
     editors: {
         textarea: '[data-action="local-coursetranslator/textarea"',

@@ -132,23 +132,13 @@ class translate_page implements renderable, templatable {
         $charcountspaces = 0;
         $spaces = 0;
 
-        foreach ($this->coursedata as $section) {
-            // Count for each section's headers.
-            foreach ($section['section'] as $s) {
-                $this->computewordcount($s->text, $wordcount, $spaces, $charcountspaces);
-            }
-            // Count for each section's activites.
-            foreach ($section['activities'] as $a) {
-                $this->computewordcount($a->text, $wordcount, $spaces, $charcountspaces);
-            }
-        }
         // Set word and character counts to data.
         $data->wordcount = $wordcount;
         $data->charcountspaces = $charcountspaces;
         $data->charcount = $charcountspaces - $spaces;
         // Set langs.
-        $data->current_lang = $this->currentlang;
-        $data->target_lang = $this->targetlang;
+        $data->current_lang = mb_strtoupper($this->currentlang);
+        $data->target_lang = mb_strtoupper($this->targetlang);
         $data->mlangfilter = $this->mlangfilter;
         // Pass data.
         $data->course = $this->course;
@@ -164,6 +154,7 @@ class translate_page implements renderable, templatable {
      * @param int $sc ref
      * @param int $csc ref
      * @return void
+     * @deprecated since MDL-xxx as wordcomputing is now done in the JS to follow inline filtering
      */
     private function computewordcount(string $text, int &$wc, int &$sc, int &$csc): void {
         $tagsstriped = strip_tags($text);

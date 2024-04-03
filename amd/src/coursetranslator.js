@@ -145,6 +145,8 @@ export const init = (cfg) => {
             toggleAutotranslateButton();
         });
     });
+    showRows(Selectors.statuses.updated, document.querySelector(Selectors.actions.showUpdated).checked);
+    showRows(Selectors.statuses.needsupdate, document.querySelector(Selectors.actions.showNeedUpdate).checked);
 };
 /**
  * Save Translation to Moodle
@@ -345,6 +347,7 @@ const getupdatedtext = (fieldtext, text, source) => {
 };
 const onItemChecked = (e) => {
     toggleStatus(e.target.getAttribute('data-key'), e.target.checked);
+    countWordAndChar();
 };
 const toggleStatus = (key, checked) => {
     const icon = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key));
@@ -400,15 +403,19 @@ const setIconStatus = (icon, s = Selectors.statuses.wait, isBtn = false) => {
  * @param {boolean} selected
  */
 const showRows = (selector, selected) => {
-    let items = document.querySelectorAll(selector);
+    const items = document.querySelectorAll(selector);
+    const allSelected = document.querySelector(Selectors.actions.selectAllBtn).checked;
+    window.console.log(allSelected);
     items.forEach((item) => {
         let k = item.getAttribute('data-row-id');
         toggleRowVisibility(item, selected);
         // When a row is toggled then we don't want it to be selected and sent from translation.
-        item.querySelector(replaceKey(Selectors.editors.multiples.checkBoxesWithKey, k)).checked = false;
+        item.querySelector(replaceKey(Selectors.editors.multiples.checkBoxesWithKey, k)).checked = allSelected && selected;
+        //toggleStatus(k, false);
         toggleStatus(k, false);
     });
     toggleAutotranslateButton();
+    countWordAndChar();
 };
 const toggleRowVisibility = (row, checked) => {
     if (checked) {
@@ -594,6 +601,7 @@ const toggleAllCheckboxes = (e) => {
         });
     }
     toggleAutotranslateButton();
+    countWordAndChar();
 };
 const getParentRow = (node) => {
     return node.closest(replaceKey(Selectors.sourcetexts.parentrow, node.getAttribute('data-key')));
@@ -650,6 +658,63 @@ const replaceKey = (s, k) => {
 const keyidToKey = (k) => {
     let m = k.match(/^(.+)-(.+)-(.+)$/i);
     return `${m[1]}[${m[2]}][${m[3]}]`;
+};
+/**
+ * Launch countWordAndChar
+ */
+const countWordAndChar = () => {
+    let wc = 0;
+    let sc = 0;
+    let csc = 0;
+    document
+        .querySelectorAll(Selectors.statuses.checkedCheckBoxes)
+        .forEach((ckBox) => {
+            let key = ckBox.getAttribute("data-key");
+            let results = getCount(key);
+            wc += results.wordCount;
+            csc += results.charNumWithOutSpace;
+            sc += results.charNumWithSpace;
+        });
+    let wcSpan = document.querySelector(Selectors.statuses.wordcount);
+    let scSpan = document.querySelector(Selectors.statuses.charNumWithSpace);
+    let cscSpan = document.querySelector(Selectors.statuses.charNumWithOutSpace);
+    window.console.log(wcSpan, scSpan, cscSpan);
+    window.console.log(wcSpan.text, scSpan.text, cscSpan.text);
+    window.console.log(wc, sc, csc);
+    wcSpan.innerText = wc;
+    scSpan.innerText = sc;
+    cscSpan.innerText = csc;
+};
+/**
+ * @param {string} key
+ * @return {object}
+ */
+const getCount = (key) => {
+    let sourceText = document.querySelector(Selectors.sourcetexts.keys.replace("<KEY>", key)).getAttribute("data-sourcetext-raw");
+    return countChars(sourceText);
+};
+/**
+ *
+ * @param {String} val
+ * @returns {{wordCount: *, charNumWithSpace: *, charNumWithOutSpace: *}}
+ */
+const countChars = (val) => {
+    const withSpace = val.length;
+    // Without using regex
+    //var withOutSpace = document.getElementById("newInputID").value.split(' ').join('').length;
+    //with using Regex
+    const withOutSpace = val.replace(/\s+/g, '').length;
+    const wordsCount = val.match(/\S+/g).length;
+    window.console.log({
+        "wordCount": wordsCount,
+        "charNumWithSpace": withSpace,
+        "charNumWithOutSpace": withOutSpace
+    });
+    return {
+        "wordCount": wordsCount,
+        "charNumWithSpace": withSpace,
+        "charNumWithOutSpace": withOutSpace
+    };
 };
 /**
  * {mlang} searchex regex

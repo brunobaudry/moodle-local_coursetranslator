@@ -60,6 +60,11 @@ $secondary: $gray-400 !default;
         bottom: 80px !important;
     }
 
+    #local_coursetranslator__settings {
+        position: relative;
+        top: -4px;
+    }
+
     a[aria-expanded=true] .fa-caret-right {
         display: none;
     }

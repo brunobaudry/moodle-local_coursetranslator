@@ -58,18 +58,24 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 >
 <textarea id="translation-context" width="800px" /-->
 
-<div class="px-3 align-items-end">
-    <a role="button" class="link link-underline px-3" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-        {{#str}}t_seeSetting,local_coursetranslator{{/str}} <i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i>
+<div class="text-right">
+    <a id="local_coursetranslator__settings"
+       role="button" class="link link-underline" data-toggle="collapse"
+       data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i> {{#str}}t_seeSetting,local_coursetranslator{{/str}}
     </a>
 </div>
 
 <div class="container-fluid collapse card bg-primary-light" id="collapseExample">
+    <div class="text-right">
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
+        <a href=" https://www.deepl.com/docs-api/translate-text/translate-text" id="local_coursetranslator__moresettings">{{#str}}
+            t_deeplapidoc,local_coursetranslator{{/str}}</a>
+    </div>
+    <div class="row py-3">
 
-    <div class="row py-3  card-body">
 
-
-        <div class="col">
+        <div class="col-2" id="local_coursetranslator__formality">
             {{#str}}t_formality,local_coursetranslator{{/str}}
             <div class="custom-control custom-radio">
                 <input type="radio" value="default" checked="checked" id="formality1" name="local-coursetranslator/formality" class="custom-control-input">
@@ -93,75 +99,86 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
             </div>
 
         </div>
-        <div class="col" data-id="local_coursetranslator/moresettings">
-            <a href="https://www.deepl.com/docs-api/translate-text/translate-text">{{#str}}t_deeplapidoc,local_coursetranslator{{/str}}</a>
-
-
-            <div class="row  py-1">
-                <div class="col">
-                    <div class="d-flex my-switch">
-                        <div class="form-text text-1"> {{#str}}t_taghandling,local_coursetranslator{{/str}}XML&nbsp;</div>
-                        <div class="custom-control custom-switch">
-                            <input id="tag_handling" class="custom-control-input" type="checkbox" data-id="local-coursetranslator/tag_handling" checked>
-                            <label class="custom-control-label" for="tag_handling">&nbsp;HTML</label></div>
-                    </div>
+        <div class="col-4">
+            <div id="local_coursetranslator__splitsentences">
+                {{#str}}t_splitsentences,local_coursetranslator{{/str}}
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="split_sentences1" name="local-coursetranslator/split_sentences" class="custom-control-input" value="0">
+                    <label class="custom-control-label" for="split_sentences1">{{#str}}t_splitsentences_0,local_coursetranslator{{/str}}</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="split_sentences2" name="local-coursetranslator/split_sentences" class="custom-control-input" checked="checked" value="1">
+                    <label class="custom-control-label" for="split_sentences2">{{#str}}t_splitsentences_1,local_coursetranslator{{/str}}</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" checked="checked" id="split_sentences3"
+                           name="local-coursetranslator/split_sentences"
+                           class="custom-control-input"
+                           value="nonewlines">
+                    <label class="custom-control-label" for="split_sentences3">{{#str}}t_splitsentences_nonewlines,local_coursetranslator{{/str}}</label>
                 </div>
             </div>
-            <div class="row a py-1">
-                <div class="col">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="preserve_formatting" data-id="local-coursetranslator/preserve_formatting">
-                        <label class="custom-control-label" for="preserve_formatting">{{#str}}t_preserveformatting,local_coursetranslator{{/str}}</label>
-                    </div>
+            <div id="local_coursetranslator__preserveformating">
+                <div class="mt-4 custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="preserve_formatting" data-id="local-coursetranslator/preserve_formatting">
+                    <label class="custom-control-label" for="preserve_formatting">{{#str}}t_preserveformatting,local_coursetranslator{{/str}}</label>
                 </div>
             </div>
-
-            <div class="row  py-1">
-                <div class="col">
-                    <div class="custom-control custom-switch">
-                        <input id="outline_detection" class="custom-control-input" type="checkbox" data-id="local-coursetranslator/outline_detection">
-                        <label class="custom-control-label" for="outline_detection">{{#str}}t_outlinedetection,local_coursetranslator{{/str}}</label>
-                    </div>
-                </div>
-            </div>
-
-
         </div>
-        <div class="col">
+        <div class="col-6" id="local_coursetranslator__glossarycontext">
             <label class="" for="glossary_id">{{#str}}t_glossaryid,local_coursetranslator{{/str}}</label>
-            <input type="text" class="form-control mb-2 mr-sm-2" id="glossary_id" placeholder="{{#str}}t_glossaryid_placeholder,local_coursetranslator{{/str}}"
+            <input type="text" class="w-50 form-control mb-2 mr-sm-2" id="local_coursetranslator__glossary"
+                   placeholder="{{#str}}t_glossaryid_placeholder,local_coursetranslator{{/str}}"
                    data-id="local-coursetranslator/glossary_id"/>
-            {{#str}}t_splitsentences,local_coursetranslator{{/str}}
-            <div class="custom-control custom-radio">
-                <input type="radio" id="split_sentences1" name="local-coursetranslator/split_sentences" class="custom-control-input" value="0">
-                <label class="custom-control-label" for="split_sentences1">{{#str}}t_splitsentences_0,local_coursetranslator{{/str}}</label>
+
+            <label for="context">{{#str}}t_contextDeepl,local_coursetranslator{{/str}}</label>
+            <textarea class="form-control" id="local_coursetranslator__context" data-id="local-coursetranslator/context" rows="3"
+                      placeholder="{{#str}}t_contextDeeplPlaceholder,local_coursetranslator{{/str}}"></textarea>
+
+        </div>
+
+
+    </div>
+    <hr class="hr hr-blurry"/>
+    <div class="row py-3" id="local_coursetranslator__tags">
+        <div class="col-5" id="local_coursetranslator__xmlhtml">
+            <div class="d-flex my-switch">
+                <div class="form-text text-1"> {{#str}}t_taghandling,local_coursetranslator{{/str}}XML&nbsp;</div>
+                <div class="custom-control custom-switch">
+                    <input id="tag_handling" class="custom-control-input" type="checkbox" data-id="local-coursetranslator/tag_handling" checked>
+                    <label class="custom-control-label" for="tag_handling">&nbsp;HTML</label></div>
             </div>
-            <div class="custom-control custom-radio">
-                <input type="radio" id="split_sentences2" name="local-coursetranslator/split_sentences" class="custom-control-input" checked="checked" value="1">
-                <label class="custom-control-label" for="split_sentences2">{{#str}}t_splitsentences_1,local_coursetranslator{{/str}}</label>
+
+            <div class="custom-control custom-switch mt-3" id="local_coursetranslator__outilinedetection">
+                <input id="outline_detection" class="custom-control-input" type="checkbox" data-id="local-coursetranslator/outline_detection">
+                <label class="custom-control-label" for="outline_detection">{{#str}}t_outlinedetection,local_coursetranslator{{/str}}</label>
             </div>
-            <div class="custom-control custom-radio">
-                <input type="radio" id="split_sentences3" name="local-coursetranslator/split_sentences" class="custom-control-input" value="nonewlines">
-                <label class="custom-control-label" for="split_sentences3">{{#str}}t_splitsentences_nonewlines,local_coursetranslator{{/str}}</label>
+            <div class="mt-3" id="local_coursetranslator__tagsignore">
+                <label for="ignore_tags">{{#str}}t_ignoretags,local_coursetranslator{{/str}}</label>
+                <textarea class="form-control" id="ignore_tags" data-id="local-coursetranslator/ignore_tags"
+                          placeholder="{{#str}}t_ignoretags,local_coursetranslator{{/str}}"></textarea>
             </div>
+
+        </div>
+        <div class="col-7 py-3">
+
+
+            <div class="col" id="local_coursetranslator__tagsnosplitting">
+                <label for="non_splitting_tags">{{#str}}t_nonsplittingtags,local_coursetranslator{{/str}}</label>
+                <textarea class="form-control" id="non_splitting_tags" data-id="local-coursetranslator/non_splitting_tags"
+                          placeholder="{{#str}}t_tagsplaceholder,local_coursetranslator{{/str}}"></textarea></div>
+            <div class="col" id="local_coursetranslator__tagssplitting"><label for="splitting_tags">{{#str}}t_splittingtags,local_coursetranslator{{/str}}</label>
+                <textarea class="form-control" id="splitting_tags" data-id="local-coursetranslator/splitting_tags"
+                          placeholder="{{#str}}t_tagsplaceholder,local_coursetranslator{{/str}}"></textarea></div>
+
         </div>
     </div>
-    <div class="row py-3">
-        <div class="col">
-            <label for="non_splitting_tags">{{#str}}t_nonsplittingtags,local_coursetranslator{{/str}}</label>
-            <textarea class="form-control" id="non_splitting_tags" data-id="local-coursetranslator/non_splitting_tags"
-                      placeholder="{{#str}}t_tagsplaceholder,local_coursetranslator{{/str}}"></textarea></div>
-        <div class="col"><label for="splitting_tags">{{#str}}t_splittingtags,local_coursetranslator{{/str}}</label>
-            <textarea class="form-control" id="splitting_tags" data-id="local-coursetranslator/splitting_tags"
-                      placeholder="{{#str}}t_tagsplaceholder,local_coursetranslator{{/str}}"></textarea></div>
-        <div class="col"><label for="ignore_tags">{{#str}}t_ignoretags,local_coursetranslator{{/str}}</label>
-            <textarea class="form-control" id="ignore_tags" data-id="local-coursetranslator/ignore_tags"
-                      placeholder="{{#str}}t_ignoretags,local_coursetranslator{{/str}}"></textarea></div>
-    </div>
+
 </div>
 <div class="container-fluid">
-    <div class="row py-1">
-        <div class="col-3 ">
+    <div class="row py-1" id="local_coursetranslator__sourcetarget">
+        <div class="col-2">&nbsp;</div>
+        <div class="col-3">
             <label for="source_lang">{{#str}}t_sourceLang,local_coursetranslator{{/str}}</label>
             <select class="form-control" id="source_lang"
                     data-action="local-coursetranslator/source-switcher">
@@ -169,6 +186,10 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                     <option value="{{ code }}" {{selected}} {{disabled}}>{{ lang }}</option>
                 {{/langs}}
             </select>
+        </div>
+        <div class="col-2 h1 text-center"><i class="fa fa-arrow-right" aria-hidden="true"></i>
+        </div>
+        <div class="col-3">
             <label for="select-target-language">
                 {{#str}}t_select_target_language,local_coursetranslator{{/str}}
             </label>
@@ -183,48 +204,39 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                 {{/target_langs}}
             </select>
         </div>
-        <div class="col-8 form-group ">
-            <label for="context">{{#str}}t_contextDeepl,local_coursetranslator{{/str}}</label>
-            <textarea class="form-control" id="context" data-id="local-coursetranslator/context" rows="3"
-                      placeholder="{{#str}}t_contextDeeplPlaceholder,local_coursetranslator{{/str}}"></textarea>
-        </div>
+        <div class="col-1">&nbsp;</div>
 
     </div>
 
 </div>
-
-<div class="container-fluid sticky-top sticky-offset">
-    <div class="row align-items-center border-bottom py-2 bg-primary text-white">
-        <div class="col-6 px-3 ">
-            <div class="form-check form-check-inline">
-                <input type="checkbox" id="show-updated"
-                       checked="checked"
-                       class="local-coursetranslator__show-updated"
-                       data-action="local-coursetranslator/show-updated"
-                />
-                <label for="show-updated" class="mb-0 pl-1">{{#str}}t_uptodate,local_coursetranslator{{/str}}</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input type="checkbox" id="show-needsupdate" checked="checked"
-                       class="local-coursetranslator__show-needsupdate"
-                       data-action="local-coursetranslator/show-needsupdate"
-                />
-                <label for="show-needsupdate" class="mb-0 pl-1">{{#str}}t_needsupdate,local_coursetranslator{{/str}}</label>
-            </div>
+<div class="bg-secondary container-fluid sticky-top sticky-offset" id="local-coursetranslator-translate-header">
+    <div class="row pl-5 pt-2 pb-0" id="local-coursetranslator-translate-header-filter">
+        <span>Filters :</span>
+        <div class="custom-control custom-switch ml-3">
+            <input id="show-updated" class="custom-control-input local-coursetranslator__show-updated" type="checkbox"
+                   data-id="local-coursetranslator/outline_detection"
+                   data-action="local-coursetranslator/show-updated">
+            <label class="custom-control-label" for="show-updated">{{#str}}t_uptodate,local_coursetranslator{{/str}}</label>
         </div>
-        <div class="col-6 px-0">
-            <p class="my-0 text-center">
-                {{! counts }}
-                {{#str}} t_word_count_sentence,
-                    local_coursetranslator,
-                    { "wordcount": {{#quote}}{{ wordcount }}{{/quote}}, "charcount": {{#quote}}{{ charcount }}{{/quote}},"charcountspaces":{{#quote}}{{ charcountspaces }}{{/quote}}
-                    } {{/str}}
-            </p>
+        <div class="custom-control custom-switch ml-3">
+            <input id="show-needsupdate" checked="checked" type="checkbox"
+                   class="custom-control-input local-coursetranslator__show-needsupdate"
+                   data-id="local-coursetranslator/outline_detection"
+                   data-action="local-coursetranslator/show-needsupdate"
+            >
+            <label class="custom-control-label" for="show-needsupdate">{{#str}}t_needsupdate,local_coursetranslator{{/str}}</label>
         </div>
+        <p class="ml-5">
+            {{! counts }}
+            {{#str}} t_word_count_sentence,
+                local_coursetranslator,
+                { "wordcount": {{#quote}}{{ wordcount }}{{/quote}}, "charcount": {{#quote}}{{ charcount }}{{/quote}},"charcountspaces":{{#quote}}{{ charcountspaces }}{{/quote}}
+                } {{/str}}
+        </p>
     </div>
-    <div id="local-coursetranslator-translate-header" class=" row align-items-center border-bottom py-2 bg-primary text-white">
-        <div class="col-1">
-            <div class="form-check">
+    <div class="row pt-0 pb-1 align-items-center">
+        <div class="col-1 px-5">
+            <div class="form-check" id="local-coursetranslator-translate-header-select-all">
                 <input
                         class="form-check-input local-coursetranslator__select-all"
                         data-action="local-coursetranslator/select-all"
@@ -232,22 +244,29 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                         aria-label="{{#str}}t_selectall,local_coursetranslator{{/str}}"
                         title="{{#str}}t_selectall,local_coursetranslator{{/str}}"
                         name="select-all"
-                        id="select-all"
+
                         disabled
                 />
-                <label class="form-check-label text-white" for="select-all">
-                    {{#str}}t_status,local_coursetranslator{{/str}}
+                <label class="form-check-label" for="select-all">
+                    {{#str}}t_selectall,local_coursetranslator{{/str}}
                 </label>
             </div>
         </div>
-        <div class="col-5 px-0 pr-5 text-center">
+
+        <div class="col-5">
             {{#str}}t_source_text,local_coursetranslator, {{ current_lang }} {{/str}}
         </div>
+
+        <div class="col-5 px-0">
+            {{#str}}t_translation,local_coursetranslator, {{ target_lang }} {{/str}}
+
+        </div>
         <div class="col-1 px-0">
-            <div class="text-left">
+            <div class="text-center">
                 <button
+                        id="local-coursetranslator-translate-header-translatebutton"
                         type="button"
-                        class="btn btn-success local-coursetranslator__autotranslate-btn"
+                        class="p-1 btn btn-primary local-coursetranslator__autotranslate-btn"
                         data-action="local-coursetranslator/autotranslate-btn"
                         disabled
                 >
@@ -255,18 +274,16 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                 </button>
             </div>
         </div>
-        <div class="col-5 px-0">
-            {{#str}}t_translation,local_coursetranslator, {{ target_lang }} {{/str}}
-
-        </div>
     </div>
 </div>
 
 {{{mform}}}
 <button
+        id="local-coursetranslator-translate-header-saveallbutton"
+        title="{{#str}}t_saveallexplain,local_coursetranslator{{/str}}"
         type="button"
         class="btn btn-success local-coursetranslator__saveall-btn"
         data-action="local-coursetranslator/saveall-btn"
         disabled
         hidden
->{{#str}}t_saveall,local_coursetranslator{{/str}}</button>
+><i class="fa fa-floppy-o" aria-hidden="true"></i> {{#str}}t_saveall,local_coursetranslator{{/str}}</button>

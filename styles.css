@@ -41,6 +41,10 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
   position: sticky !important;
   bottom: 80px !important;
 }
+#page-local-coursetranslator-translate #local_coursetranslator__settings {
+  position: relative;
+  top: -4px;
+}
 #page-local-coursetranslator-translate a[aria-expanded=true] .fa-caret-right {
   display: none;
 }
