@@ -158,7 +158,7 @@ grouping.
 
 ## User tour (inline tutorial)
 
-You can install a [tour guide](trourguide/tour_export.json) to simplify your translators's trainings.
+You can install a [tour guide](moodle-local_coursetranslator/blob/main/tourguide/tour_export.json) to simplify your translators's trainings.
 
 See moodle's instructions here : [User tours](https://docs.moodle.org/31/en/User_tours)
 
