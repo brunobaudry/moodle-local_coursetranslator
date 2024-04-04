@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.9] 2024-04-04
+
+### Added
+
+- Row selection and main buttons made sticky.
+- Word and char calc is now in JS to be reset upon filtering.
+- Tour guide.
+
+### Removed
+
+- Word and char count in php.
+
+### Improvements
+
+- Simplified bootstraps.
+
+### Todo
+
+- Mustache the page header.
+- More tests.
+
 ## [0.9.5] - 2024-01-22
 
 ### Fork
