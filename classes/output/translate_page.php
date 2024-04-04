@@ -85,7 +85,7 @@ class translate_page implements renderable, templatable {
         $this->mlangfilter = $mlangfilter;
         // Moodle Form.
         $mform = new translate_form(null, ['course' => $course, 'coursedata' => $coursedata, 'mlangfilter' => $mlangfilter,
-                'current_lang' => $this->currentlang, 'target_lang' => $this->targetlang, 'usage' => $usage,
+                'current_lang' => $this->currentlang, 'target_lang' => $this->targetlang,
         ]);
         $this->mform = $mform;
     }
