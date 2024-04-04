@@ -109,6 +109,7 @@ export const init = (cfg) => {
     if (config.debug > 0) {
         window.console.info("debugging coursetranslator");
         window.console.info(config);
+        getDeeplsUsage();
     }
     mainEditorType = config.userPrefs;
     // Setup
@@ -716,55 +717,27 @@ const countChars = (val) => {
         "charNumWithOutSpace": withOutSpace
     };
 };
-/**
- * {mlang} searchex regex
- */
-/*
-const searchex =
-  /{\s*mlang\s+((?:[a-z0-9_-]+)(?:\s*,\s*[a-z0-9_-]+\s*)*)\s*}(.*?){\s*mlang\s*}/dgis;
-*/
-/**
- * Search for mlang tags
- *
- * The code for this js parser was adapted from filter/multilang2
- * @todo store for future ref
- * @param {string} text Text with {mlang}
- * @returns {string}
- */
-/*
-const mlangparser = (text) => {
-  // Search for {mlang} not found.
-  if (text.match(searchex) === null) {
-    return text;
-  }
-  // Replace callback for searchex results.
-  const replacecallback = (lang, match) => {
-    let blocklang = match.split(searchex)[1];
-    let blocktext = match.split(searchex)[2];
-    if (blocklang === lang) {
-      return blocktext;
-    } else {
-      return "";
-    }
-  };
+const getDeeplsUsage = () => {
+    // const formData = new FormData();
+    // formData.append("auth_key", config.apikey);
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            const status = xhr.status;
+            if (status === 0 || (status >= 200 && status < 400)) {
+                // The request has been completed successfully
+                let data = JSON.parse(xhr.responseText);
+                window.console.info(data);
+            } else {
+                // Oh no! There has been an error with the request!
+                window.console.warn(status, xhr);
+            }
+        } else {
+            window.console.warn();
+        }
+    };
 
-  // Get searchex results.
-  let result = text.replace(searchex, (match) => {
-    let lang = config.lang;
-    return replacecallback(lang, match);
-  });
-
-  // No results were found, return text in mlang other
-  if (result.length === 0) {
-    let mlangpattern = "{mlang other}(.*?){mlang}";
-    let mlangex = new RegExp(mlangpattern, "dgis");
-    let matches = text.match(mlangex);
-    if (matches[0].split(searchex)[2]) {
-      return matches[0].split(searchex)[2];
-    }
-  }
-
-  // Return the found string.
-  return result;
+    xhr.open("GET", "https://api.deepl.com/v2/usage");
+    xhr.setRequestHeader("Authorization", config.apikey);
+    xhr.send();
 };
-*/
