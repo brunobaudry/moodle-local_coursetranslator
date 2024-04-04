@@ -206,6 +206,7 @@ const saveTranslation = (key) => {
                     tdata.field = field;
                     tdata.text = updatedtext;
                     if (config.debug > 0) {
+                        window.console.info(updatedtext);
                         window.console.info(tdata);
                     }
                     // Success Message
@@ -228,11 +229,17 @@ const saveTranslation = (key) => {
                     const errorMessage = (error) => {
                         editor.classList.add("local-coursetranslator__error");
                         setIconStatus(icon, Selectors.statuses.failed);
-                        if (error) {
-                            textarea.innerHTML = error;
+                        const errorMsg = document.createElement('div');
+                        errorMsg.classList = ['alert alert-danger'];
+                        if (config.debug > 0) {
+                            errorMsg.innerHTML = error.debuginfo;
+                            window.console.log(error);
+                        } else {
+                            const setIndex = error.debuginfo.indexOf("SET") === -1 ?? 15;
+                            errorMsg.innerHTML = error.message + '<br/>' + error.debuginfo.slice(0, setIndex) + '...';
                         }
+                        editor.parentElement.appendChild(errorMsg);
                     };
-
                     // Submit the request
                     ajax.call([
                         {
@@ -666,27 +673,40 @@ const keyidToKey = (k) => {
  * Launch countWordAndChar
  */
 const countWordAndChar = () => {
-    let wc = 0;
-    let sc = 0;
-    let csc = 0;
+    let wrdsc = 0;
+    let cws = 0;
+    let cwos = 0;
     document
         .querySelectorAll(Selectors.statuses.checkedCheckBoxes)
         .forEach((ckBox) => {
             let key = ckBox.getAttribute("data-key");
             let results = getCount(key);
-            wc += results.wordCount;
-            csc += results.charNumWithOutSpace;
-            sc += results.charNumWithSpace;
+            wrdsc += results.wordCount;
+            cwos += results.charNumWithOutSpace;
+            cws += results.charNumWithSpace;
         });
-    let wcSpan = document.querySelector(Selectors.statuses.wordcount);
-    let scSpan = document.querySelector(Selectors.statuses.charNumWithSpace);
-    let cscSpan = document.querySelector(Selectors.statuses.charNumWithOutSpace);
-    window.console.log(wcSpan, scSpan, cscSpan);
-    window.console.log(wcSpan.text, scSpan.text, cscSpan.text);
-    window.console.log(wc, sc, csc);
-    wcSpan.innerText = wc;
-    scSpan.innerText = sc;
-    cscSpan.innerText = csc;
+    const wordCount = document.querySelector(Selectors.statuses.wordcount);
+    const charWithSpace = document.querySelector(Selectors.statuses.charNumWithSpace);
+    const charWOSpace = document.querySelector(Selectors.statuses.charNumWithOutSpace);
+    const deeplUseSpan = document.querySelector(Selectors.statuses.deeplUsage);
+    const deeplMaxSpan = document.querySelector(Selectors.statuses.deeplMax);
+    const parent = document.querySelector(Selectors.statuses.deeplStatusContainer);
+    let current = cwos + usage.character.count;
+    window.console.log(wordCount, charWithSpace, charWOSpace, deeplUseSpan, deeplMaxSpan);
+
+
+    wordCount.innerText = wrdsc;
+    charWithSpace.innerText = cws;
+    charWOSpace.innerText = cwos;
+    deeplUseSpan.innerText = current;
+    deeplMaxSpan.innerText = usage.character.limit;
+    if (current >= usage.character.limit) {
+        parent.classList.remove('alert-success');
+        parent.classList.add('alert-danger');
+    } else {
+        parent.classList.add('alert-success');
+        parent.classList.remove('alert-danger');
+    }
 };
 /**
  * @param {string} key
@@ -703,9 +723,7 @@ const getCount = (key) => {
  */
 const countChars = (val) => {
     const withSpace = val.length;
-    // Without using regex
-    //var withOutSpace = document.getElementById("newInputID").value.split(' ').join('').length;
-    //with using Regex
+    // Using Regex
     const withOutSpace = val.replace(/\s+/g, '').length;
     const wordsCount = val.match(/\S+/g).length;
     window.console.log({

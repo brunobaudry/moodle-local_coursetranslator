@@ -48,7 +48,7 @@ $string['t_select_target_language'] = 'Target language {mlang XX}';
 $string['t_word_count'] = '{$a} words';
 $string['t_char_count'] = '{$a} characters';
 $string['t_word_count_sentence'] =
-        'Total <span id="local_coursetranslator__wc">{$a->wordcount}</span> words, <span id="local_coursetranslator__csc">{$a->charcount}</span> characters (<span id="local_coursetranslator__sc">{$a->charcountspaces}</span> chars including spaces)';
+        'Total <span id="local_coursetranslator__wc">0</span> words, <span id="local_coursetranslator__wosc">0</span> characters (<span id="local_coursetranslator__wsc">0</span> chars including spaces) Deepl\'s usage = <span id="local_coursetranslator__used">0</span>/<span id="local_coursetranslator__max">0</span>';
 $string['t_warningsource'] =
         'Watch out ! The current source language &quot;{$a}&quot; is already as a multilang tag along side with the fallback tag &quot;OTHER&quot;. Note that both will be merge as the &quot;OTHER&quot; multilang tag.';
 $string['t_char_count_spaces'] = '({$a} char including spaces)';

@@ -50,8 +50,11 @@ export default {
         success: 'local-coursetranslator/success',
         saved: 'local-coursetranslator/saved',
         wordcount: '#local_coursetranslator__wc',
-        charNumWithOutSpace: '#local_coursetranslator__sc',
-        charNumWithSpace: '#local_coursetranslator__csc',
+        charNumWithOutSpace: '#local_coursetranslator__wosc',
+        charNumWithSpace: '#local_coursetranslator__wsc',
+        deeplUsage: '#local_coursetranslator__used',
+        deeplMax: '#local_coursetranslator__max',
+        deeplStatusContainer: '#local-coursetranslator-translate-header-usage',
     },
     editors: {
         textarea: '[data-action="local-coursetranslator/textarea"',

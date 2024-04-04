@@ -206,12 +206,9 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
             >
             <label class="custom-control-label" for="show-needsupdate">{{#str}}t_needsupdate,local_coursetranslator{{/str}}</label>
         </div>
-        <p class="ml-5">
+        <p id="local-coursetranslator-translate-header-usage" class="ml-2 p-1 alert">
             {{! counts }}
-            {{#str}} t_word_count_sentence,
-                local_coursetranslator,
-                { "wordcount": {{#quote}}{{ wordcount }}{{/quote}}, "charcount": {{#quote}}{{ charcount }}{{/quote}},"charcountspaces":{{#quote}}{{ charcountspaces }}{{/quote}}
-                } {{/str}}
+            {{#str}}t_word_count_sentence,local_coursetranslator{{/str}}
         </p>
     </div>
     <div class="row pt-0 pb-1 align-items-center">

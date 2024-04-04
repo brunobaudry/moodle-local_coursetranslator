@@ -72,20 +72,20 @@ class translate_page implements renderable, templatable {
      * @param object $course Moodle course record
      * @param array $coursedata Custom processed course record
      * @param object $mlangfilter Multilang2 Filter for filtering output
+     * @param Usage $usage Deepl's usage status.
      * @todo MDL-0 no need form if treatment and api call is done by js. Replace by Mustache.
      */
     public function __construct($course, $coursedata, $mlangfilter) {
         $this->course = $course;
         $this->coursedata = $coursedata;
         $this->langs = get_string_manager()->get_list_of_translations();
-
         // If source lang is changed for a course than the whole translation should be void.
         $this->currentlang = optional_param('lang', current_language(), PARAM_NOTAGS);
         $this->targetlang = optional_param('target_lang', 'en', PARAM_NOTAGS);
         $this->mlangfilter = $mlangfilter;
         // Moodle Form.
         $mform = new translate_form(null, ['course' => $course, 'coursedata' => $coursedata, 'mlangfilter' => $mlangfilter,
-                'current_lang' => $this->currentlang, 'target_lang' => $this->targetlang,
+                'current_lang' => $this->currentlang, 'target_lang' => $this->targetlang, 'usage' => $usage,
         ]);
         $this->mform = $mform;
     }
@@ -127,15 +127,6 @@ class translate_page implements renderable, templatable {
         $renderedform = str_replace('class="col-md-9 form-inline align-items-start felement"', '', $renderedform);
         $data->mform = $renderedform;
 
-        // Get word and character counts.
-        $wordcount = 0;
-        $charcountspaces = 0;
-        $spaces = 0;
-
-        // Set word and character counts to data.
-        $data->wordcount = $wordcount;
-        $data->charcountspaces = $charcountspaces;
-        $data->charcount = $charcountspaces - $spaces;
         // Set langs.
         $data->current_lang = mb_strtoupper($this->currentlang);
         $data->target_lang = mb_strtoupper($this->targetlang);
@@ -144,25 +135,5 @@ class translate_page implements renderable, templatable {
         $data->course = $this->course;
         $data->coursedata = $this->coursedata;
         return $data;
-    }
-
-    /**
-     * Compute word, spaces and character's count for a single text
-     *
-     * @param string $text
-     * @param int $wc ref
-     * @param int $sc ref
-     * @param int $csc ref
-     * @return void
-     * @deprecated since MDL-xxx as wordcomputing is now done in the JS to follow inline filtering
-     */
-    private function computewordcount(string $text, int &$wc, int &$sc, int &$csc): void {
-        $tagsstriped = strip_tags($text);
-        // Get the wordcount.
-        $wc = $wc + strlen(str_word_count($tagsstriped));
-        // Get the character count with spaces.
-        $csc = $csc + strlen($tagsstriped);
-        // Get the character count without spaces.
-        $sc = $sc + strlen(array_key_last(preg_split('/\s+/', $tagsstriped)));
     }
 }

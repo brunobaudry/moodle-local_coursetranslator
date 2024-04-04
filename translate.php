@@ -58,6 +58,7 @@ $jsconfig->apikey = get_config('local_coursetranslator', 'apikey');
 $translator = new \DeepL\Translator($jsconfig->apikey);
 $usage = $translator->getUsage();
 $jsconfig->usage = $usage;
+$jsconfig->limitReached = $usage->anyLimitReached();
 $jsconfig->lang = $targetlang;
 $jsconfig->currentlang = current_language();
 $jsconfig->syslang = $CFG->lang;
@@ -103,6 +104,6 @@ echo $output->heading($mlangfilter->filter($course->fullname));
 
 $coursedata = new course_data($course, $targetlang, $context);
 $renderable = new translate_page($course, $coursedata->getdata(), $mlangfilter);
-echo $output->render($renderable, $course);
+echo $output->render($renderable);
 // Output footer.
 echo $output->footer();
