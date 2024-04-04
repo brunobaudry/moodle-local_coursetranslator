@@ -50,5 +50,4 @@ function local_coursetranslator_extend_navigation_course($navigation, $course) {
     if (has_capability('local/coursetranslator:edittranslations', context_course::instance($course->id))) {
         $navigation->add_node($translatecontent);
     }
-
 }

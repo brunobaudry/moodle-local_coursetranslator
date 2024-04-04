@@ -403,6 +403,7 @@ class course_data {
      * @param int $cmid
      * @return array
      */
+
     private function get_item_contextid($id, $table, $cmid = 0) {
         $i = 0;
         $iscomp = false;
