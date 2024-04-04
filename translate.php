@@ -32,7 +32,7 @@ use local_coursetranslator\data\course_data;
 use local_coursetranslator\output\translate_page;
 
 require_once(__DIR__ . '/../../config.php');
-require_once(__DIR__ . '/classes/vendor/autoload.php');
+require_once(__DIR__ . '/vendor/autoload.php');
 global $CFG;
 global $PAGE;
 global $DB;
