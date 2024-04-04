@@ -111,9 +111,9 @@ jobs:
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
-          IGNORE_PATHS: moodle/tests/fixtures,moodle/Sniffs,moodle/local/coursetranslator/vendor
-      #          CODECHECKER_IGNORE_PATHS: vendor
-      #          PHPDOCCHECKER_IGNORE_PATHS: moodle/local/coursetranslator/vendor
+          IGNORE_PATHS: moodle/tests/fixtures,moodle/Sniffs
+          CODECHECKER_IGNORE_PATHS: vendor
+          PHPDOCCHECKER_IGNORE_PATHS: vendor
 
       - name: PHP Lint
         if: ${{ always() }}
