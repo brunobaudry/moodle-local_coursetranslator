@@ -421,7 +421,6 @@ const showRows = (selector, selected) => {
         toggleRowVisibility(item, selected);
         // When a row is toggled then we don't want it to be selected and sent from translation.
         item.querySelector(replaceKey(Selectors.editors.multiples.checkBoxesWithKey, k)).checked = allSelected && selected;
-        //toggleStatus(k, false);
         toggleStatus(k, false);
     });
     toggleAutotranslateButton();
