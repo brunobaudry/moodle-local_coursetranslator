@@ -26,10 +26,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'local_coursetranslator';  // Full name of the plugin (used for diagnostics).
-$plugin->version = 2024032800;                // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version = 2024040500;                // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires = 2020061500;                // Requires Moodle 3.9 LTS.
-$plugin->supported = [401, 403];                // Supported Moodle Versions.
+$plugin->supported = [401, 404];                // Supported Moodle Versions.
 $plugin->maturity = MATURITY_ALPHA;            // Maturity level.
-$plugin->release = 'v0.9.8';                  // Semantic Versioning for CHANGES.md.
+$plugin->release = 'v0.9.9';                  // Semantic Versioning for CHANGES.md.
 // Dependencies.
 $plugin->dependencies = ['filter_multilang2' => 2020101300];
