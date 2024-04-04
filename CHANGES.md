@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Mustache the page header.
 - More tests.
+- Add glossary interface.
+- Refactor with Deepl libs.
+- Insert usage control.
 
 ## [0.9.5] - 2024-01-22
 

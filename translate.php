@@ -32,6 +32,7 @@ use local_coursetranslator\data\course_data;
 use local_coursetranslator\output\translate_page;
 
 require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/classes/vendor/autoload.php');
 global $CFG;
 global $PAGE;
 global $DB;
@@ -51,9 +52,12 @@ $PAGE->set_context($context);
 require_login();
 require_capability('local/coursetranslator:edittranslations', $context);
 
-// Get js data.
+// Set js data.
 $jsconfig = new stdClass();
 $jsconfig->apikey = get_config('local_coursetranslator', 'apikey');
+$translator = new \DeepL\Translator($jsconfig->apikey);
+$usage = $translator->getUsage();
+$jsconfig->usage = $usage;
 $jsconfig->lang = $targetlang;
 $jsconfig->currentlang = current_language();
 $jsconfig->syslang = $CFG->lang;

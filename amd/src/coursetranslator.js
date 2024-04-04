@@ -32,6 +32,7 @@ let checkboxes = [];
 let sourceLang = "";
 let targetLang = "";
 let saveAllBtn = {};
+let usage = {};
 
 const registerEventListeners = () => {
 
@@ -106,10 +107,11 @@ const registerUI = () => {
  */
 export const init = (cfg) => {
     config = cfg;
+    usage = config.usage;
     if (config.debug > 0) {
         window.console.info("debugging coursetranslator");
         window.console.info(config);
-        getDeeplsUsage();
+        window.console.info(usage);
     }
     mainEditorType = config.userPrefs;
     // Setup
@@ -716,28 +718,4 @@ const countChars = (val) => {
         "charNumWithSpace": withSpace,
         "charNumWithOutSpace": withOutSpace
     };
-};
-const getDeeplsUsage = () => {
-    // const formData = new FormData();
-    // formData.append("auth_key", config.apikey);
-    let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            const status = xhr.status;
-            if (status === 0 || (status >= 200 && status < 400)) {
-                // The request has been completed successfully
-                let data = JSON.parse(xhr.responseText);
-                window.console.info(data);
-            } else {
-                // Oh no! There has been an error with the request!
-                window.console.warn(status, xhr);
-            }
-        } else {
-            window.console.warn();
-        }
-    };
-
-    xhr.open("GET", "https://api.deepl.com/v2/usage");
-    xhr.setRequestHeader("Authorization", config.apikey);
-    xhr.send();
 };
