@@ -72,7 +72,6 @@ class translate_page implements renderable, templatable {
      * @param object $course Moodle course record
      * @param array $coursedata Custom processed course record
      * @param object $mlangfilter Multilang2 Filter for filtering output
-     * @param Usage $usage Deepl's usage status.
      * @todo MDL-0 no need form if treatment and api call is done by js. Replace by Mustache.
      */
     public function __construct($course, $coursedata, $mlangfilter) {
