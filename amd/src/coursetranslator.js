@@ -236,7 +236,7 @@ const saveTranslation = (key) => {
                             errorMsg.innerHTML = error.debuginfo;
                             window.console.log(error);
                         } else {
-                            const setIndex = error.debuginfo.indexOf("SET") === -1 ?? 15;
+                            const setIndex = error.debuginfo.indexOf("SET") === -1 ? 15 : error.debuginfo.indexOf("SET");
                             errorMsg.innerHTML = error.message + '<br/>' + error.debuginfo.slice(0, setIndex) + '...';
                         }
                         editor.parentElement.appendChild(errorMsg);

@@ -159,7 +159,7 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 </div>
 <div class="container-fluid">
     <div class="row py-1" id="local_coursetranslator__sourcetarget">
-        <div class="col-3 text-right">{{#str}}t_sourceLang,local_coursetranslator{{/str}}</div>
+        <div class="col-3 text-right"><label for="source_lang">{{#str}}t_sourceLang,local_coursetranslator{{/str}}</label></div>
         <div class="col-2">
             <select class="form-control" id="source_lang"
                     data-action="local-coursetranslator/source-switcher">
@@ -182,7 +182,7 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
                 {{/target_langs}}
             </select>
         </div>
-        <div class="col-3">&nbsp;{{#str}}t_select_target_language,local_coursetranslator{{/str}}</div>
+        <div class="col-3"><label for="select-target-language">{{#str}}t_select_target_language,local_coursetranslator{{/str}}</label></div>
     </div>
 </div>
 <div class="bg-secondary container-fluid sticky-top sticky-offset" id="local-coursetranslator-translate-header">
