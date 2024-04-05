@@ -152,6 +152,14 @@ export const init = (cfg) => {
     showRows(Selectors.statuses.updated, document.querySelector(Selectors.actions.showUpdated).checked);
     showRows(Selectors.statuses.needsupdate, document.querySelector(Selectors.actions.showNeedUpdate).checked);
 };
+const showErrorMessageForEditor = (key, message) => {
+    let parent = document.querySelector(Selectors.editors.multiples.editorsWithKey.replace("<KEY>", key));
+    const errorMsg = document.createElement('div');
+    errorMsg.classList = ['alert alert-danger'];
+    errorMsg.innerHTML = message;
+    parent.appendChild(errorMsg);
+};
+
 /**
  * Save Translation to Moodle
  * @param  {String} key Data Key
@@ -161,9 +169,7 @@ const saveTranslation = (key) => {
     let editor = tempTranslations[key].editor;
     let text = editor.innerHTML; // We keep the editors text in case translation is edited
     let sourceText = tempTranslations[key].source;
-    let icon = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key));
-    let selector = Selectors.editors.multiples.editorsWithKey.replace("<KEY>", key);
-    let element = document.querySelector(selector);
+    let element = document.querySelector(Selectors.editors.multiples.editorsWithKey.replace("<KEY>", key));
     let id = element.getAttribute("data-id");
     let tid = element.getAttribute("data-tid");
     let table = element.getAttribute("data-table");
@@ -214,7 +220,7 @@ const saveTranslation = (key) => {
                     const successMessage = () => {
                         element.classList.add("local-coursetranslator__success");
                         // Add saved indicator
-                        setIconStatus(icon, Selectors.statuses.success);
+                        setIconStatus(key, Selectors.statuses.success);
                         // Remove success message after a few seconds
                         setTimeout(() => {
                             let multilangPill = document.querySelector(replaceKey(Selectors.statuses.multilang, key));
@@ -223,23 +229,19 @@ const saveTranslation = (key) => {
                             if (multilangPill.classList.contains("invisible")) {
                                 multilangPill.classList.remove('invisible');
                             }
-                            setIconStatus(icon, Selectors.statuses.saved);
+                            setIconStatus(key, Selectors.statuses.saved);
                         });
                     };
                     // Error Mesage
                     const errorMessage = (error) => {
                         editor.classList.add("local-coursetranslator__error");
-                        setIconStatus(icon, Selectors.statuses.failed);
-                        const errorMsg = document.createElement('div');
-                        errorMsg.classList = ['alert alert-danger'];
+                        setIconStatus(key, Selectors.statuses.failed);
+                        const setIndex = error.debuginfo.indexOf("SET") === -1 ? 15 : error.debuginfo.indexOf("SET");
+                        let message = error.message + '<br/>' + error.debuginfo.slice(0, setIndex) + '...';
                         if (config.debug > 0) {
-                            errorMsg.innerHTML = error.debuginfo;
-                            window.console.log(error);
-                        } else {
-                            const setIndex = error.debuginfo.indexOf("SET") === -1 ? 15 : error.debuginfo.indexOf("SET");
-                            errorMsg.innerHTML = error.message + '<br/>' + error.debuginfo.slice(0, setIndex) + '...';
+                            message = error.debuginfo;
                         }
-                        editor.parentElement.appendChild(errorMsg);
+                        showErrorMessageForEditor(key, message);
                     };
                     // Submit the request
                     ajax.call([
@@ -302,16 +304,6 @@ const getupdatedtext = (fieldtext, text, source) => {
     let otherlangtext = `${startOther}${source}{mlang}`; // Source tag.
     let targetLangTag = `{mlang ${targetlang}}`; // Target tag.
     let targetlangtext = `${targetLangTag}${text}{mlang}`;
-    if (config.debug > 0) {
-        window.console.info("targetlang", targetlang);
-        window.console.info("startOther", startOther);
-        window.console.info("otherlangtext", otherlangtext);
-        window.console.info("targetLangTag", targetLangTag);
-        window.console.info("targetlangtext", targetlangtext); // Translated text with tag.
-        window.console.info("fieldtext", fieldtext); // Original editor content.
-        window.console.info("text", text); // Translated text without tag.
-        window.console.info("source", source); // Source text without tag.
-    }
     // Return new mlang text if mlang has not been used before.
     if (fieldtext.indexOf("{mlang") === -1) {
         return otherlangtext + targetlangtext;
@@ -360,25 +352,54 @@ const onItemChecked = (e) => {
     toggleStatus(e.target.getAttribute('data-key'), e.target.checked);
     countWordAndChar();
 };
+const initTempForKey = (key, blank) => {
+    // Get the source text
+    const sourceText = document.querySelector(Selectors.sourcetexts.keys.replace("<KEY>", key)).getAttribute("data-sourcetext-raw");
+    const editorSettings = findEditor(key);
+    tempTranslations[key] = {
+        'editorType': null,
+        'editor': null,
+        'source': sourceText,
+        'status': Selectors.statuses.wait,
+        'translation': ''
+    };
+    if (!blank) {
+        if (editorSettings === null || editorSettings.editor === null) {
+            setIconStatus(key, Selectors.statuses.failed);
+            showErrorMessageForEditor(key, 'Original editor not found...');
+        } else {
+            // Initialize status for the source content.
+            tempTranslations[key] = {
+                'editorType': editorSettings.editorType,
+                'editor': editorSettings.editor,
+                'source': sourceText,
+                'status': Selectors.statuses.wait,
+                'translation': ''
+            };
+        }
+    }
+};
 const toggleStatus = (key, checked) => {
-    const icon = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key));
-    const status = icon.dataset.status;
+    const status = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key)).dataset.status;
     switch (status) {
         case Selectors.statuses.wait :
             if (checked) {
-                setIconStatus(icon, Selectors.statuses.totranslate);
+                setIconStatus(key, Selectors.statuses.totranslate);
+                initTempForKey(key, false);
+            } else {
+                initTempForKey(key, true);
             }
             break;
         case Selectors.statuses.totranslate :
             if (checked && tempTranslations[key]?.translation?.length > 0) {
-                setIconStatus(icon, Selectors.statuses.tosave, true);
+                setIconStatus(key, Selectors.statuses.tosave, true);
             } else {
-                setIconStatus(icon, Selectors.statuses.wait);
+                setIconStatus(key, Selectors.statuses.wait);
             }
             break;
         case Selectors.statuses.tosave :
             if (!checked) {
-                setIconStatus(icon, Selectors.statuses.totranslate);
+                setIconStatus(key, Selectors.statuses.totranslate);
             }
             break;
         case Selectors.statuses.failed :
@@ -389,7 +410,8 @@ const toggleStatus = (key, checked) => {
             break;
     }
 };
-const setIconStatus = (icon, s = Selectors.statuses.wait, isBtn = false) => {
+const setIconStatus = (key, s = Selectors.statuses.wait, isBtn = false) => {
+    let icon = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key));
     if (isBtn) {
         if (!icon.classList.contains('btn')) {
             icon.classList.add('btn');
@@ -416,7 +438,6 @@ const setIconStatus = (icon, s = Selectors.statuses.wait, isBtn = false) => {
 const showRows = (selector, selected) => {
     const items = document.querySelectorAll(selector);
     const allSelected = document.querySelector(Selectors.actions.selectAllBtn).checked;
-    window.console.log(allSelected);
     items.forEach((item) => {
         let k = item.getAttribute('data-row-id');
         toggleRowVisibility(item, selected);
@@ -465,7 +486,9 @@ const doAutotranslate = () => {
         .querySelectorAll(Selectors.statuses.checkedCheckBoxes)
         .forEach((ckBox) => {
             let key = ckBox.getAttribute("data-key");
-            getTranslation(key);
+            if (tempTranslations[key].editor !== null) {
+                getTranslation(key);
+            }
         });
 };
 /**
@@ -474,30 +497,11 @@ const doAutotranslate = () => {
  * @param {Integer} key Translation Key
  */
 const getTranslation = (key) => {
-    // Store the key in the dictionary
-    tempTranslations[key] = {};
-    // Get the editor
-    let editorSettings = findEditor(key);
-    if (config.debug > 0) {
-        window.console.info(editorSettings);
-    }
-    let editor = editorSettings.editor;
-    let editorType = editorSettings.editorType;
-
-    // Get the source text
-    let sourceText = document.querySelector(Selectors.sourcetexts.keys.replace("<KEY>", key)).getAttribute("data-sourcetext-raw");
-    let icon = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key));
     // Initialize global dictionary with this key's editor.
-    tempTranslations[key] = {
-        'editorType': editorType,
-        'editor': editor,
-        'source': sourceText,
-        'status': Selectors.statuses.wait,
-        'translation': ''
-    };
+    tempTranslations[key].staus = Selectors.statuses.wait;
     // Build formData
     let formData = new FormData();
-    formData.append("text", sourceText);
+    formData.append("text", tempTranslations[key].source);
     formData.append("source_lang", sourceLang.toUpperCase());
     formData.append("target_lang", targetLang.toUpperCase());
     formData.append("auth_key", config.apikey);
@@ -523,14 +527,16 @@ const getTranslation = (key) => {
                 // The request has been completed successfully
                 let data = JSON.parse(xhr.responseText);
                 // Display translation
-                editor.innerHTML = data.translations[0].text;
+                tempTranslations[key].editor.innerHTML = data.translations[0].text;
                 // Store the translation in the global object
                 tempTranslations[key].translation = data.translations[0].text;
-                setIconStatus(icon, Selectors.statuses.tosave, true);
-                injectImageCss(editorSettings); // Hack for iframes based editors to highlight missing pictures.
+                setIconStatus(key, Selectors.statuses.tosave, true);
+                injectImageCss(
+                    tempTranslations[key].editorType,
+                    tempTranslations[key].editor); // Hack for iframes based editors to highlight missing pictures.
             } else {
                 // Oh no! There has been an error with the request!
-                setIconStatus(icon, Selectors.statuses.failed, false);
+                setIconStatus(key, Selectors.statuses.failed, false);
             }
         }
     };
@@ -538,15 +544,20 @@ const getTranslation = (key) => {
     xhr.send(formData);
 };
 /**
- * Inject css to highlight ALT text of image not loaded because of @@POLUGINFILE@@
+ *
  * @param {Integer} editorSettings
  * */
-const injectImageCss = (editorSettings) => {
+/**
+ * Inject css to highlight ALT text of image not loaded because of @@POLUGINFILE@@
+ * @param {string} editorType
+ * @param {object} editor
+ */
+const injectImageCss = (editorType, editor) => {
     // Prepare css to inject in iframe editors
     const css = document.createElement('style');
     css.textContent = 'img{background-color:yellow !important;font-style: italic;}';
-    if (editorSettings.editorType === "iframe") {
-        let editorschildrens = Array.from(editorSettings.editor.parentElement.children);
+    if (editorType === "iframe") {
+        let editorschildrens = Array.from(editor.parentElement.children);
         let found = false;
         for (let j in editorschildrens) {
             let e = editorschildrens[j];
@@ -556,7 +567,7 @@ const injectImageCss = (editorSettings) => {
             }
         }
         if (!found) {
-            editorSettings.editor.parentElement.appendChild(css);
+            editor.parentElement.appendChild(css);
         }
     }
 };
@@ -732,9 +743,6 @@ const countWordAndChar = () => {
     const deeplMaxSpan = document.querySelector(Selectors.statuses.deeplMax);
     const parent = document.querySelector(Selectors.statuses.deeplStatusContainer);
     let current = cwos + usage.character.count;
-    window.console.log(wordCount, charWithSpace, charWOSpace, deeplUseSpan, deeplMaxSpan);
-
-
     wordCount.innerText = wrdsc;
     charWithSpace.innerText = cws;
     charWOSpace.innerText = cwos;
@@ -766,11 +774,6 @@ const countChars = (val) => {
     // Using Regex
     const withOutSpace = val.replace(/\s+/g, '').length;
     const wordsCount = val.match(/\S+/g).length;
-    window.console.log({
-        "wordCount": wordsCount,
-        "charNumWithSpace": withSpace,
-        "charNumWithOutSpace": withOutSpace
-    });
     return {
         "wordCount": wordsCount,
         "charNumWithSpace": withSpace,

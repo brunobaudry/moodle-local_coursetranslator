@@ -23,15 +23,6 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
   /*    [data-status="local-coursetranslator/tosave"] i:hover {
           color: $black;
       }*/
-  /*#toggleMultilang {
-      font-size: medium;
-      margin: 1px;
-      border: white 2px solid;
-  }
-
-  #toggleMultilang.showing, #toggleMultilang:hover {
-      border: black 2px solid;
-  }*/
 }
 #page-local-coursetranslator-translate .sticky-offset {
   top: 20px;
@@ -120,6 +111,10 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }
 #page-local-coursetranslator-translate [data-status="local-coursetranslator/failed"] i:before {
   content: "\f071"; /*exclamation triangle  icon*/
+  color: #ca3120;
+}
+#page-local-coursetranslator-translate [data-status="local-coursetranslator/error"] i:before {
+  content: "\f1e2"; /*bomb  icon*/
   color: #ca3120;
 }
 
