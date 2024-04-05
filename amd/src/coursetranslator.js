@@ -33,6 +33,7 @@ let sourceLang = "";
 let targetLang = "";
 let saveAllBtn = {};
 let usage = {};
+let format = new Intl.NumberFormat();
 
 const registerEventListeners = () => {
 
@@ -697,8 +698,8 @@ const countWordAndChar = () => {
     wordCount.innerText = wrdsc;
     charWithSpace.innerText = cws;
     charWOSpace.innerText = cwos;
-    deeplUseSpan.innerText = current;
-    deeplMaxSpan.innerText = usage.character.limit;
+    deeplUseSpan.innerText = format.format(current);
+    deeplMaxSpan.innerText = usage.character.limit === null ? '∞' : format.format(usage.character.limit);
     if (current >= usage.character.limit) {
         parent.classList.remove('alert-success');
         parent.classList.add('alert-danger');

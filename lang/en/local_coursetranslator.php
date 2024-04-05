@@ -43,8 +43,8 @@ $string['t_contextDeepl'] = 'Course context ';
 $string['t_deeplapidoc'] = 'see detail on deepl\'s documentation';
 $string['t_contextDeeplPlaceholder'] =
         'Tell the translator (Deepl) about the context, to help it translate in a more contextual way... ';
-$string['t_sourceLang'] = 'Source lang {mlang other}';
-$string['t_select_target_language'] = 'Target language {mlang XX}';
+$string['t_sourceLang'] = 'Source lang <em>{mlang other}</em>';
+$string['t_select_target_language'] = 'Target language <em>{mlang XX}</em>';
 $string['t_word_count'] = '{$a} words';
 $string['t_char_count'] = '{$a} characters';
 $string['t_word_count_sentence'] =
@@ -52,9 +52,9 @@ $string['t_word_count_sentence'] =
 $string['t_warningsource'] =
         'Watch out ! The current source language &quot;{$a}&quot; is already as a multilang tag along side with the fallback tag &quot;OTHER&quot;. Note that both will be merge as the &quot;OTHER&quot; multilang tag.';
 $string['t_char_count_spaces'] = '({$a} char including spaces)';
-$string['t_autotranslate'] = 'Translate';
-$string['t_source_text'] = 'Source lang: {$a}';
-$string['t_translation'] = 'Target lang: {$a}';
+$string['t_autotranslate'] = 'Translate {$a->source} &rarr; {$a->target}';
+$string['t_source_text'] = 'Source lang: {$a}';// Deprecated.
+$string['t_translation'] = 'Target lang: {$a}';// Deprecated.
 $string['t_autosaved'] = 'Saved!';
 $string['t_selectall'] = 'All';
 $string['t_saveall'] = 'Save&nbsp;all';
