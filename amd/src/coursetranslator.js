@@ -561,6 +561,7 @@ const injectImageCss = (editorSettings) => {
     }
 };
 /**
+ * @todo get the editor from moodle db in the php.
  * Get the editor container based on recieved current user's
  * editor preference.
  * @param {Integer} key Translation Key
@@ -570,27 +571,66 @@ const findEditor = (key) => {
         .replace("<KEY>", key));
     let et = 'basic';
     if (e === null) {
-        switch (mainEditorType) {
-            case "atto" :
-                et = 'iframe';
-                e = document.querySelector(
-                    Selectors.editors.types.atto
-                        .replaceAll("<KEY>", key));
-                break;
-            case "tiny":
-                et = 'iframe';
-                e = document.querySelector(Selectors.editors.types.tiny
-                    .replaceAll("<KEY>", key))
-                    .contentWindow.tinymce;
-                break;
-            case 'marklar':
-            case "textarea" :
-                e = document.querySelector(Selectors.editors.types.other
-                    .replaceAll("<KEY>", key));
-                break;
+        let r = null;
+        let editorTab = ["atto", "tiny", "marklar", "textarea"];
+        if (editorTab.indexOf(mainEditorType) === -1) {
+            window.console.warn('Unsupported editor ' + mainEditorType);
+        } else {
+            // First let's try the current editor.
+            try {
+                r = findEditorByType(key, mainEditorType);
+            } catch (e) {
+                // Content was edited by another editor.
+                try {
+                    // Remove the current editor from list.
+                    editorTab.splice(editorTab.indexOf(mainEditorType), 1);
+                    while (editorTab.length > 0) {
+                        let ed = editorTab.shift();
+                        try {
+                            r = findEditorByType(key, ed);
+                            break;
+                        } catch (e) {
+                            continue;
+                        }
+                    }
+                } catch (e) {
+                    return null;
+                }
+            }
         }
+        return r;
+    } else {
+        return {editor: e, editorType: et};
     }
-    return {editor: e, editorType: et};
+};
+/**
+ * @param {string} key
+ * @param {object} editorType
+ * @returns {{editor: object, editorType: string}}
+ */
+const findEditorByType = (key, editorType) => {
+    let et = 'basic';
+    let ed = null;
+    switch (editorType) {
+        case "atto" :
+            et = 'iframe';
+            ed = document.querySelector(
+                Selectors.editors.types.atto
+                    .replaceAll("<KEY>", key));
+            break;
+        case "tiny":
+            et = 'iframe';
+            ed = document.querySelector(Selectors.editors.types.tiny
+                .replaceAll("<KEY>", key))
+                .contentWindow.tinymce;
+            break;
+        case 'marklar':
+        case "textarea" :
+            ed = document.querySelector(Selectors.editors.types.other
+                .replaceAll("<KEY>", key));
+            break;
+    }
+    return {editor: ed, editorType: et};
 };
 /**
  * Toggle checkboxes
