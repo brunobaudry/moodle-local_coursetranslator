@@ -42,17 +42,11 @@ require_once("$CFG->dirroot/local/coursetranslator/classes/editor/MoodleQuickFor
 class translate_form extends moodleform {
 
     /**
-     * Target language
+     * available langs
      *
-     * @var String
+     * @var Array
      */
-    private $targetlang;
-    /**
-     * Source language
-     *
-     * @var String
-     */
-    private $currentlang;
+    private $langpack;
 
     /**
      * Define Moodle Form
@@ -65,8 +59,7 @@ class translate_form extends moodleform {
         // Get course data.
         $course = $this->_customdata['course'];
         $coursedata = $this->_customdata['coursedata'];
-        $this->targetlang = $this->_customdata['target_lang'];
-        $this->currentlang = $this->_customdata['current_lang'];
+        $this->langpack = $this->_customdata['langpack'];
 
         // Start moodle form.
         $mform = $this->_form;
@@ -121,16 +114,16 @@ class translate_form extends moodleform {
                 "<div class='$cssclass row align-items-start border-bottom py-2' data-row-id='$key' data-status='$status'>");
 
         // Column 1 settings.
-        if ($this->targetlang === $this->currentlang) {
+        if ($this->langpack->targetlang === $this->langpack->currentlang) {
             $buttonclass = 'badge-dark';
-            $titlestring = get_string('t_canttranslate', 'local_coursetranslator', $this->targetlang);
+            $titlestring = get_string('t_canttranslate', 'local_coursetranslator', $this->langpack->targetlang);
         } else if ($item->tneeded) {
-            if (str_contains($item->text, "{mlang " . $this->targetlang)) {
+            if (str_contains($item->text, "{mlang " . $this->langpack->targetlang)) {
                 $buttonclass = 'badge-warning';
                 $titlestring = get_string('t_needsupdate', 'local_coursetranslator');
             } else {
                 $buttonclass = 'badge-danger';
-                $titlestring = get_string('t_nevertranslated', 'local_coursetranslator', $this->targetlang);
+                $titlestring = get_string('t_nevertranslated', 'local_coursetranslator', $this->langpack->targetlang);
             }
 
         } else {
@@ -146,6 +139,20 @@ class translate_form extends moodleform {
             class='mx-2'
             data-action='local-coursetranslator/checkbox'
             disabled/>";
+
+        // Column 1 layout.
+        $mform->addElement('html', '<div class="col-1 px-1">');
+        $mform->addElement('html', $bulletstatus);
+        $mform->addElement('html', $checkbox);
+        $mform->addElement('html', '</div>');
+        // Column 2 settings.
+        // Edit button.
+        $editbuttontitle = get_string('t_edit', 'local_coursetranslator');
+        $editinplacebutton = "<a class='p-1 btn btn-sm btn-outline-info'
+                        id='local-coursetranslator__sourcelink' href='{$item->link}' target='_blank'
+                            title='$editbuttontitle'>
+                            <i class='fa fa-pencil' aria-hidden='true'></i>
+                        </a>";
         // Multilanguage tag.
         // Invisible when nothing translated already.
         // Can be as bootstrap info when there is a multilang tag in the source.
@@ -166,22 +173,12 @@ class translate_form extends moodleform {
                     role='button'
                     class='ml-1 btn btn-sm btn-outline-$badgeclass $visibilityclass'>
                     <i class='fa fa-language' aria-hidden='true'></i></span>";
-
-        // Column 1 layout.
-        $mform->addElement('html', '<div class="col-1 px-1">');
-        $mform->addElement('html', $bulletstatus);
-
-        $mform->addElement('html', $checkbox);
-
-        $mform->addElement('html', '</div>');
-        // Column 2 settings.
-        // Edit button.
-        $editbuttontitle = get_string('t_edit', 'local_coursetranslator');
-        $editinplacebutton = "<a class='p-1 btn btn-sm btn-outline-info'
-                        id='local-coursetranslator__sourcelink' href='{$item->link}' target='_blank'
-                            title='$editbuttontitle'>
-                            <i class='fa fa-pencil' aria-hidden='true'></i>
-                        </a>";
+        // Source lang select.
+        $sourceoptions = $this->langpack->preparehtmloptions(true, false);
+        $selecttitle = get_string('t_special_source_text', 'local_coursetranslator', strtoupper($this->langpack->currentlang));
+        $sourceselect =
+                "<select class='form-select' title='$selecttitle' data-key='$key' data-action='local-coursetranslator/sourceselect'>
+                    {$sourceoptions}</select>";
         // Source Text.
         $sourcetextdiv = "<div class='col-5 px-0 pr-5 local-coursetranslator__source-text' data-key='$key'>";
 
@@ -189,7 +186,7 @@ class translate_form extends moodleform {
         $rawsourcetext = htmlentities($mlangfilter->filter($item->text));
         $mlangfiltered = $mlangfilter->filter($item->displaytext);
         $sourcetextarea = "<div class='collapse show' data-sourcetext-key='$key'
-                data-sourcetext-raw='$rawsourcetext'>$mlangfiltered</div>";
+                data-sourcetext-raw='$rawsourcetext' >$mlangfiltered</div>";
         // Collapsible multilang textarea.
         $trimedtext = trim($item->text);
         $multilangtextarea = "<div class='collapse' id='$keyid'>";
@@ -200,6 +197,7 @@ class translate_form extends moodleform {
         $mform->addElement('html', $sourcetextdiv);
         $mform->addElement('html', $editinplacebutton);
         $mform->addElement('html', $mutlilangspantag);
+        $mform->addElement('html', $sourceselect);
         $mform->addElement('html', $sourcetextarea);
         $mform->addElement('html', $multilangtextarea);
 
@@ -253,7 +251,7 @@ class translate_form extends moodleform {
      * @return bool
      */
     private function check_field_has_other_and_sourcetag(string $t): bool {
-        return str_contains($t, '{mlang other}') && str_contains($t, "{mlang $this->currentlang}");
+        return str_contains($t, '{mlang other}') && str_contains($t, "{mlang {$this->langpack->currentlang}");
     }
 
     /**
@@ -284,4 +282,5 @@ class translate_form extends moodleform {
     public function require_access() {
         require_capability('local/multilingual:edittranslations', context_system::instance());
     }
+
 }

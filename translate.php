@@ -29,6 +29,7 @@
 
 // Get libs.
 use local_coursetranslator\data\course_data;
+use local_coursetranslator\data\lang_pack;
 use local_coursetranslator\output\translate_page;
 
 require_once(__DIR__ . '/../../config.php');
@@ -39,11 +40,12 @@ global $DB;
 require_once($CFG->dirroot . '/filter/multilang2/filter.php');
 require_once('./classes/output/translate_page.php');
 require_once('./classes/data/course_data.php');
+require_once('./classes/data/lang_pack.php');
 require_once($CFG->dirroot . '/lib/editorlib.php');
 
 // Needed vars for processing.
 $courseid = required_param('course_id', PARAM_INT);
-$targetlang = optional_param('target_lang', null, PARAM_NOTAGS);
+$languagepack = new lang_pack();
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
 // Setup page.
@@ -59,16 +61,12 @@ $translator = new \DeepL\Translator($jsconfig->apikey);
 $usage = $translator->getUsage();
 $jsconfig->usage = $usage;
 $jsconfig->limitReached = $usage->anyLimitReached();
-$jsconfig->lang = $targetlang;
-$jsconfig->currentlang = current_language();
+$jsconfig->lang = $languagepack->targetlang;
+$jsconfig->currentlang = $languagepack->currentlang;
 $jsconfig->syslang = $CFG->lang;
 $jsconfig->courseid = $courseid;
 $jsconfig->deeplurl = boolval(get_config('local_coursetranslator', 'deeplpro')) ? 'https://api.deepl.com/v2/translate?' :
         'https://api-free.deepl.com/v2/translate?';
-$jsconfig->multiplemlang = get_string('t_multiplemlang', 'local_coursetranslator');
-$jsconfig->autosavedmsg = get_string('t_autosaved', 'local_coursetranslator');
-$jsconfig->needsupdate = get_string('t_needsupdate', 'local_coursetranslator');
-$jsconfig->uptodate = get_string('t_uptodate', 'local_coursetranslator');
 $jsconfig->debug = $CFG->debug;
 
 $mlangfilter = new filter_multilang2($context, []);
@@ -102,8 +100,8 @@ echo $output->heading($mlangfilter->filter($course->fullname));
 
 // Output translation grid.
 
-$coursedata = new course_data($course, $targetlang, $context);
-$renderable = new translate_page($course, $coursedata->getdata(), $mlangfilter);
+$coursedata = new course_data($course, $languagepack->targetlang, $context);
+$renderable = new translate_page($course, $coursedata->getdata(), $mlangfilter, $languagepack);
 echo $output->render($renderable);
 // Output footer.
 echo $output->footer();

@@ -38,6 +38,7 @@ let format = new Intl.NumberFormat();
 const registerEventListeners = () => {
 
     document.addEventListener('change', e => {
+        window.console.info('change');
         if (e.target.closest(Selectors.actions.targetSwitcher)) {
             switchTarget(e);
         }
@@ -50,7 +51,7 @@ const registerEventListeners = () => {
         if (e.target.closest(Selectors.actions.showNeedUpdate)) {
             showRows(Selectors.statuses.needsupdate, e.target.checked);
         }
-        if (e.target.closest(Selectors.actions.checkBoxes)) {
+        if (e.target.closest(Selectors.actions.checkBoxes) || e.target.closest(Selectors.actions.sourceselect)) {
             onItemChecked(e);
         }
     });
@@ -295,12 +296,13 @@ const saveTranslation = (key) => {
  * @param {string} fieldtext Latest text from database
  * @param {string} text Text to update
  * @param {string} source Original text translated from
+ * @param {string} itemSourcelang
  * @returns {string}
  */
-const getupdatedtext = (fieldtext, text, source) => {
+const getupdatedtext = (fieldtext, text, source, itemSourcelang) => {
     let targetlang = targetLang;
     // Search for {mlang} not found.
-    let startOther = `{mlang other}`;
+    let startOther = itemSourcelang === sourceLang ? '{mlang other}' : `{mlang ${itemSourcelang}}`;
     let otherlangtext = `${startOther}${source}{mlang}`; // Source tag.
     let targetLangTag = `{mlang ${targetlang}}`; // Target tag.
     let targetlangtext = `${targetLangTag}${text}{mlang}`;
@@ -349,17 +351,27 @@ const getupdatedtext = (fieldtext, text, source) => {
     return s;
 };
 const onItemChecked = (e) => {
-    toggleStatus(e.target.getAttribute('data-key'), e.target.checked);
-    countWordAndChar();
+    if (config.debug > 0) {
+        window.console.info("SELECTION", e.target.getAttribute('data-key'), e.target.getAttribute('data-action'));
+    }
+    const key = e.target.getAttribute('data-key');
+    if (e.target.getAttribute('data-action') === "local-coursetranslator/checkbox") {
+        toggleStatus(key, e.target.checked);
+        countWordAndChar();
+    } else {
+        initTempForKey(key, false);
+    }
 };
 const initTempForKey = (key, blank) => {
     // Get the source text
     const sourceText = document.querySelector(Selectors.sourcetexts.keys.replace("<KEY>", key)).getAttribute("data-sourcetext-raw");
     const editorSettings = findEditor(key);
+    const sourceLang = document.querySelector(Selectors.sourcetexts.sourcelangs.replace("<KEY>", key)).value;
     tempTranslations[key] = {
         'editorType': null,
         'editor': null,
         'source': sourceText,
+        'sourceLang': sourceLang,
         'status': Selectors.statuses.wait,
         'translation': ''
     };
@@ -373,11 +385,13 @@ const initTempForKey = (key, blank) => {
                 'editorType': editorSettings.editorType,
                 'editor': editorSettings.editor,
                 'source': sourceText,
+                'sourceLang': sourceLang,
                 'status': Selectors.statuses.wait,
                 'translation': ''
             };
         }
     }
+    window.console.info(tempTranslations[key]);
 };
 const toggleStatus = (key, checked) => {
     const status = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key)).dataset.status;
@@ -501,7 +515,7 @@ const getTranslation = (key) => {
     // Build formData
     let formData = new FormData();
     formData.append("text", tempTranslations[key].source);
-    formData.append("source_lang", sourceLang.toUpperCase());
+    formData.append("source_lang", tempTranslations[key].sourceLang);
     formData.append("target_lang", targetLang.toUpperCase());
     formData.append("auth_key", config.apikey);
     formData.append("tag_handling", document.querySelector(Selectors.deepl.tagHandling).checked ? 'html' : 'xml');//

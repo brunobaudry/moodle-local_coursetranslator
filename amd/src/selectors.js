@@ -25,6 +25,7 @@ export default {
         validatorIcon: '[data-key-validator="<KEY>"] i',
         validatorBtn: '[data-key-validator="<KEY>"] span',
         checkBoxes: '[data-action="local-coursetranslator/checkbox"]',
+        sourceselect: '[data-action="local-coursetranslator/sourceselect"]',
         selectAllBtn: '[data-action="local-coursetranslator/select-all"]',
         saveAll: '[data-action="local-coursetranslator/saveall-btn"]',
         autoTranslateBtn: '[data-action="local-coursetranslator/autotranslate-btn"]',
@@ -77,6 +78,7 @@ export default {
     },
     sourcetexts: {
         keys: '[data-sourcetext-key="<KEY>"]',
+        sourcelangs: '[data-key="<KEY>"].local-coursetranslator__source-text select',
         multilangs: '#<KEY>',
         parentrow: '[data-row-id="<KEY>"]'
     },

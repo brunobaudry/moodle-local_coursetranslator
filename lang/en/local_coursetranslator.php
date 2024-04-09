@@ -52,17 +52,18 @@ $string['t_word_count_sentence'] =
 $string['t_warningsource'] =
         'Watch out ! The current source language &quot;{$a}&quot; is already as a multilang tag along side with the fallback tag &quot;OTHER&quot;. Note that both will be merge as the &quot;OTHER&quot; multilang tag.';
 $string['t_char_count_spaces'] = '({$a} char including spaces)';
-$string['t_autotranslate'] = 'Translate {$a->source} &rarr; {$a->target}';
+$string['t_autotranslate'] = 'Translate &rarr; {$a}';
 $string['t_source_text'] = 'Source lang: {$a}';// Deprecated.
+$string['t_special_source_text'] = 'Use a different source than "{$a}"';
 $string['t_translation'] = 'Target lang: {$a}';// Deprecated.
-$string['t_autosaved'] = 'Saved!';
+$string['t_autosaved'] = 'Saved!'; // Deprecate.
 $string['t_selectall'] = 'All';
 $string['t_saveall'] = 'Save&nbsp;all';
 $string['t_saveallexplain'] = 'Batch save to database all selected translations.';
 $string['t_status'] = 'Status';
 $string['t_other'] = 'Other (other)';
 $string['t_multiplemlang'] =
-        'This field is using advanced {mlang} usage. Please edit translation using standard Moodle editor or simplify to a single mlang tag per language.';
+        'This field is using advanced {mlang} usage. Please edit translation using standard Moodle editor or simplify to a single mlang tag per language.';// Deprecate.
 $string['t_needsupdate'] = 'Needs update';
 $string['t_uptodate'] = 'Up to date';
 $string['t_nevertranslated'] = 'No \'{$a}\' translation yet';

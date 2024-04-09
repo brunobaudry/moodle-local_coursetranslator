@@ -16,6 +16,7 @@
 
 namespace local_coursetranslator\output;
 
+use local_coursetranslator\data\lang_pack;
 use renderable;
 use renderer_base;
 use stdClass;
@@ -50,14 +51,10 @@ class translate_page implements renderable, templatable {
      * @var \filter_multilang2
      */
     private object $mlangfilter;
-    /** @var String */
-    private mixed $currentlang;
-    /** @var String */
-    private mixed $targetlang;
     /**
      * @var array|mixed
      */
-    private mixed $langs;
+    private mixed $langpacks;
     /**
      * The form to display the row UI
      *
@@ -74,17 +71,14 @@ class translate_page implements renderable, templatable {
      * @param object $mlangfilter Multilang2 Filter for filtering output
      * @todo MDL-0 no need form if treatment and api call is done by js. Replace by Mustache.
      */
-    public function __construct($course, $coursedata, $mlangfilter) {
+    public function __construct($course, $coursedata, $mlangfilter, lang_pack $languagepack) {
         $this->course = $course;
         $this->coursedata = $coursedata;
-        $this->langs = get_string_manager()->get_list_of_translations();
-        // If source lang is changed for a course than the whole translation should be void.
-        $this->currentlang = optional_param('lang', current_language(), PARAM_NOTAGS);
-        $this->targetlang = optional_param('target_lang', 'en', PARAM_NOTAGS);
+        $this->langpacks = $languagepack;
         $this->mlangfilter = $mlangfilter;
         // Moodle Form.
         $mform = new translate_form(null, ['course' => $course, 'coursedata' => $coursedata, 'mlangfilter' => $mlangfilter,
-                'current_lang' => $this->currentlang, 'target_lang' => $this->targetlang,
+                'langpack' => $languagepack,
         ]);
         $this->mform = $mform;
     }
@@ -97,27 +91,10 @@ class translate_page implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $data = new stdClass();
-
-        $langs = [];
-        $targetlangs = [];
-        // Process langs.
-        foreach ($this->langs as $key => $lang) {
-            $disabletarget = $this->currentlang === $key ||
-                    !in_array($key, explode(',', get_string('supported_languages', 'local_coursetranslator')));
-            $disablesource = $this->targetlang === $key ||
-                    !in_array($key, explode(',', get_string('supported_languages', 'local_coursetranslator')));
-            array_push($langs, ['code' => $key, 'lang' => $lang, 'disabled' => $disablesource ? "disabled" : "",
-                    'selected' => $this->currentlang === $key ? "selected" : ""]);
-            array_push($targetlangs, ['code' => $key, 'lang' => $lang, 'disabled' => $disabletarget ? "disabled" : "",
-                    'selected' => $this->targetlang === $key ? "selected" : ""]);
-        }
-
         // Data for mustache template.
         $data->course = $this->course;
-        $data->target_langs = $targetlangs;
-        $data->langs = $langs;
-        $data->target_lang = $this->targetlang;
-        $data->current_lang = $this->currentlang;
+        $data->target_langs = $this->langpacks->prepareoptionlangs(false, true);
+        $data->langs = $this->langpacks->prepareoptionlangs(true, true);
 
         // Hacky fix but the only way to adjust html...
         // This could be overridden in css and I might look at that fix for the future.
@@ -127,8 +104,8 @@ class translate_page implements renderable, templatable {
         $data->mform = $renderedform;
 
         // Set langs.
-        $data->current_lang = mb_strtoupper($this->currentlang);
-        $data->target_lang = mb_strtoupper($this->targetlang);
+        $data->current_lang = mb_strtoupper($this->langpacks->currentlang);
+        $data->target_lang = mb_strtoupper($this->langpacks->targetlang);
         $data->mlangfilter = $this->mlangfilter;
         // Pass data.
         $data->course = $this->course;
