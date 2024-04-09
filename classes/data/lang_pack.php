@@ -31,7 +31,6 @@ class lang_pack {
     /**
      * @var array|mixed
      */
-
     public mixed $langcodes;
     /**
      * @var array|mixed
