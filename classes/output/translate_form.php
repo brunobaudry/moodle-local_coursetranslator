@@ -164,7 +164,7 @@ class translate_form extends moodleform {
         $badgeclass = $hasotherandsourcetag ? 'danger' : 'info';
         $titlestring = $hasotherandsourcetag ?
                 get_string('t_warningsource', 'local_coursetranslator',
-                        strtoupper($this->currentlang)) :
+                        strtoupper($this->langpack->currentlang)) :
                 get_string('t_viewsource', 'local_coursetranslator');
         $mutlilangspantag =
                 "<span
@@ -175,7 +175,7 @@ class translate_form extends moodleform {
                     class='ml-1 btn btn-sm btn-outline-$badgeclass $visibilityclass'>
                     <i class='fa fa-language' aria-hidden='true'></i></span>";
         // Source lang select.
-        $sourceoptions = $this->langpack->preparehtmloptions(true, false);
+        $sourceoptions = $this->langpack->preparehtmlotions(true, false);
         $selecttitle = get_string('t_special_source_text', 'local_coursetranslator', strtoupper($this->langpack->currentlang));
         $sourceselect =
                 "<select class='form-select' title='$selecttitle' data-key='$key' data-action='local-coursetranslator/sourceselect'>
