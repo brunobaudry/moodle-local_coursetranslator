@@ -15,7 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_coursetranslator\data;
-
+/**
+ * Language helper.
+ * Stores the source and target languages aswell as preparing arrays of versbos or code options for selects.
+ */
 class lang_pack {
     /** @var String */
     public mixed $currentlang;
@@ -73,6 +76,14 @@ class lang_pack {
         }
     }
 
+    /**
+     * creates props for selects.
+     *
+     * @param bool $issource
+     * @param bool $verbose
+     * @param bool $fromdeepls
+     * @return array
+     */
     public function prepareoptionlangs(bool $issource, bool $verbose = true, bool $fromdeepls = true) {
         $tab = [];
         $langs = $fromdeepls ? $this->translatablelangs : $this->langs;
@@ -89,6 +100,14 @@ class lang_pack {
         return $tab;
     }
 
+    /**
+     * Create HTML props for select.
+     *
+     * @param bool $issource
+     * @param bool $verbose
+     * @param bool $fromdeepls
+     * @return string
+     */
     public function preparehtmlotions(bool $issource, bool $verbose = true, bool $fromdeepls = true) {
         $tab = $this->prepareoptionlangs($issource, $verbose, $fromdeepls);
         $list = '';
