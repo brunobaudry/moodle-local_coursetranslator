@@ -233,9 +233,7 @@ class translate_form extends moodleform {
         // Plain text input.
         if ($item->format === 0) {
             $mform->addElement('html', $nowisiwig);
-        }
-        // HTML input.
-        if ($item->format === 1) {
+        } else {
             $mform->addElement('cteditor', $key, $key);
             $mform->setType($key, PARAM_RAW);
         }

@@ -481,7 +481,6 @@ const switchSource = (e) => {
  */
 const doAutotranslate = () => {
     saveAllBtn.hidden = saveAllBtn.disabled = false;
-
     document
         .querySelectorAll(Selectors.statuses.checkedCheckBoxes)
         .forEach((ckBox) => {
@@ -592,21 +591,7 @@ const findEditor = (key) => {
                 r = findEditorByType(key, mainEditorType);
             } catch (e) {
                 // Content was edited by another editor.
-                try {
-                    // Remove the current editor from list.
-                    editorTab.splice(editorTab.indexOf(mainEditorType), 1);
-                    while (editorTab.length > 0) {
-                        let ed = editorTab.shift();
-                        try {
-                            r = findEditorByType(key, ed);
-                            break;
-                        } catch (e) {
-                            continue;
-                        }
-                    }
-                } catch (e) {
-                    return null;
-                }
+                window.console.warn('Editor not found: ' + mainEditorType);
             }
         }
         return r;
