@@ -23,6 +23,7 @@
 import ajax from "core/ajax";
 import Selectors from "./selectors";
 import Modal from 'core/modal';
+import {window} from "../../../../question/type/drawing/src/d3";
 // Initialize the temporary translations dictionary @todo make external class
 let tempTranslations = {};
 let mainEditorType = '';
@@ -203,7 +204,7 @@ const saveTranslation = (key) => {
                         Selectors.editors.multiples.textAreas
                             .replace("<KEY>", key));
                     // Get the updated text
-                    let updatedtext = getupdatedtext(fieldtext, text, sourceText);
+                    let updatedtext = getupdatedtext(fieldtext, text, sourceText, tempTranslations[key].sourceLang);
 
                     // Build the data object
                     let tdata = {};
@@ -293,56 +294,67 @@ const saveTranslation = (key) => {
 
 /**
  * Update Textarea
- * @param {string} fieldtext Latest text from database
- * @param {string} text Text to update
- * @param {string} source Original text translated from
- * @param {string} itemSourcelang
+ * @param {string} fieldtext Latest text from database including all mlang tag if any.
+ * @param {string} text Translated Text to update.
+ * @param {string} source Original text translated from.
+ * @param {string} itemSourcelang The source language code
  * @returns {string}
  */
 const getupdatedtext = (fieldtext, text, source, itemSourcelang) => {
-    let targetlang = targetLang;
+    let mlangOtherStart = '{mlang other}';
+    let mlangSourceStart = `{mlang ${itemSourcelang}}`;
     // Search for {mlang} not found.
-    let startOther = itemSourcelang === sourceLang ? '{mlang other}' : `{mlang ${itemSourcelang}}`;
-    let otherlangtext = `${startOther}${source}{mlang}`; // Source tag.
-    let targetLangTag = `{mlang ${targetlang}}`; // Target tag.
+    let isSourceOther = itemSourcelang === sourceLang;
+    let targetLangTag = `{mlang ${targetLang}}`; // Target tag.
     let targetlangtext = `${targetLangTag}${text}{mlang}`;
     // Return new mlang text if mlang has not been used before.
     if (fieldtext.indexOf("{mlang") === -1) {
-        return otherlangtext + targetlangtext;
+        let otherlangtext = `${mlangOtherStart}${source}{mlang}`; // Other tag.
+        let sourcelangtext = `${mlangSourceStart}${source}{mlang}`; // Source tag.
+        // If the source lang of the text is not the main language still create both source-lang tag and source-other.
+        return (isSourceOther ? otherlangtext : otherlangtext + sourcelangtext) + targetlangtext;
     }
     // Use regex to replace the string.
-    let alllanpattern = `({mlang [a-z]{2,5}})(.*?){mlang}`;
     // Important to leave the "s" mofifiers to match line breaks added by the rich text editors.
-    let alllangregex = new RegExp(alllanpattern, "gs");
+    let alllangregex = new RegExp(`({mlang [a-z]{2,5}})(.*?){mlang}`, "gs");
     let all = {};
+    // Start tag.
     let tagReg = new RegExp("{mlang (other|[a-z]{2})}", "");
     let splited = fieldtext.split(alllangregex);
     if (config.debug > 0) {
         window.console.info("SPLITED", splited);
     }
     let foundsourcetag = "";
-    var l = "";
+    var l = ""; // Build a dictionary of current mlang tags in the source content.
     for (var i in splited) {
-        if (splited[i] === "") {
+        if (splited[i] === "") { // Skip line breaks and what ever in between tags.
             continue;
         }
         if (splited[i].match(tagReg)) {
-            l = splited[i].match(tagReg)[0];
+            l = splited[i].match(tagReg)[0]; // Create the key.
         } else if (l !== "") {
-            all[l] = splited[i];
+            all[l] = splited[i]; // Insert key/value.
             if (splited[i] === source) {
                 foundsourcetag = l;
             }
             l = "";
         }
     }
-    if (foundsourcetag !== startOther) {
-        // We need to replace the source.
-        delete all[foundsourcetag];
-    }
     // If there is a other tag we replace it by the source.
     // @todo a mechanism to propose to the user to select another tag for this.
-    all[startOther] = source;
+    if (!isSourceOther) {
+        // The source lang is different from the main source language.
+        if (all[mlangOtherStart] === null) {
+            all[mlangOtherStart] = source;
+        }
+        all[mlangSourceStart] = source;
+    } else {
+        if (foundsourcetag !== mlangOtherStart) {
+            // We need to replace the source.
+            delete all[foundsourcetag];
+        }
+        all[mlangOtherStart] = source;
+    }
     all[targetLangTag] = text;
     let s = "";
     for (let tag in all) {
@@ -350,6 +362,7 @@ const getupdatedtext = (fieldtext, text, source, itemSourcelang) => {
     }
     return s;
 };
+
 const onItemChecked = (e) => {
     if (config.debug > 0) {
         window.console.info("SELECTION", e.target.getAttribute('data-key'), e.target.getAttribute('data-action'));

@@ -29,23 +29,22 @@
 
 // Get libs.
 use local_coursetranslator\data\course_data;
-use local_coursetranslator\data\lang_pack;
+use local_coursetranslator\data\lang_helper;
 use local_coursetranslator\output\translate_page;
 
 require_once(__DIR__ . '/../../config.php');
-require_once(__DIR__ . '/classes/vendor/autoload.php');
+
 global $CFG;
 global $PAGE;
 global $DB;
 require_once($CFG->dirroot . '/filter/multilang2/filter.php');
 require_once('./classes/output/translate_page.php');
 require_once('./classes/data/course_data.php');
-require_once('./classes/data/lang_pack.php');
+require_once('./classes/data/lang_helper.php');
 require_once($CFG->dirroot . '/lib/editorlib.php');
 
 // Needed vars for processing.
 $courseid = required_param('course_id', PARAM_INT);
-$languagepack = new lang_pack();
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
 // Setup page.
@@ -53,20 +52,15 @@ $context = context_course::instance($courseid);
 $PAGE->set_context($context);
 require_login();
 require_capability('local/coursetranslator:edittranslations', $context);
-
+// Get Language helper.
+$languagepack = new lang_helper();
 // Set js data.
 $jsconfig = new stdClass();
-$jsconfig->apikey = get_config('local_coursetranslator', 'apikey');
-$translator = new \DeepL\Translator($jsconfig->apikey);
-$usage = $translator->getUsage();
-$jsconfig->usage = $usage;
-$jsconfig->limitReached = $usage->anyLimitReached();
-$jsconfig->lang = $languagepack->targetlang;
-$jsconfig->currentlang = $languagepack->currentlang;
-$jsconfig->syslang = $CFG->lang;
+$jsconfig = $languagepack->addlangproperties($jsconfig);
+// Prepare course data.
 $jsconfig->courseid = $courseid;
-$jsconfig->deeplurl = boolval(get_config('local_coursetranslator', 'deeplpro')) ? 'https://api.deepl.com/v2/translate?' :
-        'https://api-free.deepl.com/v2/translate?';
+//$jsconfig->deeplurl = boolval(get_config('local_coursetranslator', 'deeplpro')) ? 'https://api.deepl.com/v2/translate?' :
+//'https://api-free.deepl.com/v2/translate?';
 $jsconfig->debug = $CFG->debug;
 
 $mlangfilter = new filter_multilang2($context, []);
@@ -99,8 +93,9 @@ echo $output->header();
 echo $output->heading($mlangfilter->filter($course->fullname));
 
 // Output translation grid.
-
 $coursedata = new course_data($course, $languagepack->targetlang, $context);
+
+// Build the page.
 $renderable = new translate_page($course, $coursedata->getdata(), $mlangfilter, $languagepack);
 echo $output->render($renderable);
 // Output footer.

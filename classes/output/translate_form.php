@@ -19,7 +19,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 use context_system;
-use local_coursetranslator\data\lang_pack;
+use local_coursetranslator\data\lang_helper;
 use moodleform;
 use MoodleQuickForm;
 use stdClass;
@@ -45,7 +45,7 @@ class translate_form extends moodleform {
     /**
      * available langs
      *
-     * @var lang_pack
+     * @var lang_helper
      */
     private $langpack;
 

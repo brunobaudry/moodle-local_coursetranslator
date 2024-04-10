@@ -16,7 +16,7 @@
 
 namespace local_coursetranslator\output;
 
-use local_coursetranslator\data\lang_pack;
+use local_coursetranslator\data\lang_helper;
 use renderable;
 use renderer_base;
 use stdClass;
@@ -66,12 +66,13 @@ class translate_page implements renderable, templatable {
     /**
      * Constructor
      *
-     * @param object $course Moodle course record
-     * @param array $coursedata Custom processed course record
-     * @param object $mlangfilter Multilang2 Filter for filtering output
+     * @param $course
+     * @param $coursedata
+     * @param $mlangfilter
+     * @param lang_helper $languagepack
      * @todo MDL-0 no need form if treatment and api call is done by js. Replace by Mustache.
      */
-    public function __construct($course, $coursedata, $mlangfilter, lang_pack $languagepack) {
+    public function __construct($course, $coursedata, $mlangfilter, lang_helper $languagepack) {
         $this->course = $course;
         $this->coursedata = $coursedata;
         $this->langpacks = $languagepack;
