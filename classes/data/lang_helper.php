@@ -84,27 +84,6 @@ class lang_helper {
     }
 
     /**
-     * Build properties
-     *
-     * @return void
-     */
-    /**
-     * @param bool $issource
-     * @return void
-     */
-    private function makecodelists(bool $issource = true) {
-        $this->langcodes = [];
-        $this->translatablelangcodes = [];
-
-        foreach ($this->langs as $key => $lang) {
-            array_push($this->langcodes, $key);
-            if (in_array($key, $this->supportedlangs)) {
-                array_push($this->translatablelangcodes, $key);
-            }
-        }
-    }
-
-    /**
      * creates props for selects.
      *
      * @param bool $issource
