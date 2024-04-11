@@ -16,6 +16,8 @@
 
 namespace local_coursetranslator\data;
 
+defined('MOODLE_INTERNAL') || die();
+
 use DeepL\Translator;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
@@ -34,11 +36,11 @@ class lang_helper {
     /**
      * @var string
      */
-    static protected $DEEPLPRO = 'https://api.deepl.com/v2/translate?';
+    static protected $deeplpro = 'https://api.deepl.com/v2/translate?';
     /**
      * @var string
      */
-    static protected $DEEPLFREE = 'https://api-free.deepl.com/v2/translate?';
+    static protected $deeplfree = 'https://api-free.deepl.com/v2/translate?';
     /** @var String */
     public mixed $currentlang;
     /** @var String */
@@ -84,26 +86,24 @@ class lang_helper {
     }
 
     /**
-     * creates props for selects.
+     * Creates props for html selects.
      *
      * @param bool $issource
      * @param bool $verbose
-     * @param bool $fromdeepls
      * @return array
      */
     public function prepareoptionlangs(bool $issource, bool $verbose = true) {
         $tab = [];
-        $langs = $this->langs;
-        foreach ($langs as $k => $l) {
+        foreach ($this->langs as $k => $l) {
             $disable = $issource ? $k === $this->targetlang : $k === $this->currentlang;
             $selected = $issource ? $k === $this->currentlang : $k === $this->targetlang;
             $disable = $disable || !$this->islangsupported($k, $issource);
-            array_push($tab, [
+            $tab[] = [
                     'code' => $k,
                     'lang' => $verbose ? $l : $k,
                     'selected' => $selected ? 'selected' : '',
                     'disabled' => $disable ? 'disabled' : '',
-            ]);
+            ];
         }
         return $tab;
     }
@@ -113,7 +113,6 @@ class lang_helper {
      *
      * @param bool $issource
      * @param bool $verbose
-     * @param bool $fromdeepls
      * @return string
      * @todo MDL-0000 allow regional languages setup (expl EN-GB)
      */
@@ -141,7 +140,7 @@ class lang_helper {
         $config->limitReached = $config->usage->anyLimitReached();
         $config->lang = $this->targetlang;
         $config->currentlang = $this->currentlang;
-        $config->deeplurl = boolval(get_config('local_coursetranslator', 'deeplpro')) ? self::$DEEPLPRO : self::$DEEPLFREE;
+        $config->deeplurl = boolval(get_config('local_coursetranslator', 'deeplpro')) ? self::$deeplpro : self::$deeplfree;
         return $config;
     }
 

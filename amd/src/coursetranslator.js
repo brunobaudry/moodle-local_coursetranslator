@@ -23,7 +23,7 @@
 import ajax from "core/ajax";
 import Selectors from "./selectors";
 import Modal from 'core/modal';
-import {window} from "../../../../question/type/drawing/src/d3";
+
 // Initialize the temporary translations dictionary @todo make external class
 let tempTranslations = {};
 let mainEditorType = '';
@@ -110,6 +110,7 @@ const registerUI = () => {
  */
 export const init = (cfg) => {
     config = cfg;
+    config.debug = 0;
     usage = config.usage;
     if (config.debug > 0) {
         window.console.info("debugging coursetranslator");
@@ -295,12 +296,100 @@ const saveTranslation = (key) => {
 /**
  * Update Textarea
  * @param {string} fieldtext Latest text from database including all mlang tag if any.
+ * @param {string} translation Translated Text to update.
+ * @param {string} source Original text translated from.
+ * @param {string} sourceItemLang The source language code
+ * @returns {string}
+ */
+const getupdatedtext = (fieldtext, translation, source, sourceItemLang) => {
+    const isFirstTranslation = fieldtext.indexOf("{mlang") === -1;
+    const isSourceOther = sourceItemLang === sourceLang;
+    const tagPatterns = {
+        "other": "({mlang other)(.*?){mlang}",
+        "target": `({mlang ${targetLang}}(.*?){mlang})`,
+        "source": `({mlang ${sourceItemLang}}(.*?){mlang})`
+    };
+    const langsItems = {
+        "fullContent": fieldtext,
+        "other": `{mlang other}${source}{mlang}`,
+        "target": `{mlang ${targetLang}}${translation}{mlang}`,
+        "source": `{mlang ${sourceItemLang}}${source}{mlang}`
+    };
+    if (isFirstTranslation) {
+        // No mlang tag : easy.
+        if (isSourceOther) {
+            return langsItems.other + langsItems.target;
+        } else {
+            return langsItems.other + langsItems.source + langsItems.target;
+        }
+    }
+    // Alreaddy malang tag-s.
+    return additionalUpdate(isSourceOther, tagPatterns, langsItems);
+};
+
+/**
+ * Update Textarea when there was mlang tags.
+ * Main regex '({mlang ([a-z]{2,5})}(.*?){mlang})'.
+ * @param {boolean} isSourceOther
+ * @param {string} tagPatterns
+ * @param {string} langsItems
+ * @returns {string} {string}
+ */
+const additionalUpdate = (isSourceOther, tagPatterns, langsItems) => {
+    let manipulatedText = langsItems.fullContent;
+    // Do we have a TARGET tag already ?
+    const targetReg = new RegExp(tagPatterns.target, "sg");
+    const hasTagTarget = manipulatedText.match(targetReg);
+    if (hasTagTarget) {
+        // Yes replace it.
+        manipulatedText = manipulatedText.replace(targetReg, langsItems.target);
+    } else {
+        // No, add it at the end.
+        const lastMlangClosingTagEnd = manipulatedText.lastIndexOf("{mlang}") + "{mlang}".length;
+        manipulatedText = [manipulatedText.slice(0, lastMlangClosingTagEnd),
+            langsItems.target,
+            manipulatedText.slice(lastMlangClosingTagEnd)
+        ].join('');
+    }
+    // Do we have a OTHER tag already ?
+    const otherReg = new RegExp(tagPatterns.other, "sg");
+    const hasTagOther = manipulatedText.match(otherReg);
+    // Do we have a SOURCE tag already ?
+    const sourceReg = new RegExp(tagPatterns.other, "sg");
+    const hasTagSource = manipulatedText.match(sourceReg);
+    if (isSourceOther) {
+        // Whatever was the {mlang other} tag language we need to replace it by this source.
+        manipulatedText = manipulatedText.replace(otherReg, langsItems.other);
+        if (hasTagSource) {
+            // And remove the {mlang source} tag if found.
+            manipulatedText.replace(sourceReg, "");
+        }
+    } else {
+        if (!hasTagOther) {
+            // We still add this source as otherTag of the so that it can be replaced further.
+            const firstMlangClosingTagEnd = manipulatedText.indexOf("{mlang");
+            manipulatedText = [manipulatedText.slice(0, firstMlangClosingTagEnd),
+                langsItems.other,
+                manipulatedText.slice(firstMlangClosingTagEnd)
+            ].join('');
+        }
+        if (!hasTagSource) {
+            // Add the {mlang source} tag if not found.
+            manipulatedText.replace(sourceReg, langsItems.source);
+        }
+    }
+    return manipulatedText;
+};
+
+/**
+ * Update Textarea
+ * @param {string} fieldtext Latest text from database including all mlang tag if any.
  * @param {string} text Translated Text to update.
  * @param {string} source Original text translated from.
  * @param {string} itemSourcelang The source language code
  * @returns {string}
  */
-const getupdatedtext = (fieldtext, text, source, itemSourcelang) => {
+/*const getupdatedtextold = (fieldtext, text, source, itemSourcelang) => {
     let mlangOtherStart = '{mlang other}';
     let mlangSourceStart = `{mlang ${itemSourcelang}}`;
     // Search for {mlang} not found.
@@ -361,7 +450,7 @@ const getupdatedtext = (fieldtext, text, source, itemSourcelang) => {
         s += tag + all[tag] + "{mlang}";
     }
     return s;
-};
+};*/
 
 const onItemChecked = (e) => {
     if (config.debug > 0) {
@@ -404,7 +493,6 @@ const initTempForKey = (key, blank) => {
             };
         }
     }
-    window.console.info(tempTranslations[key]);
 };
 const toggleStatus = (key, checked) => {
     const status = document.querySelector(replaceKey(Selectors.actions.validatorBtn, key)).dataset.status;
@@ -442,6 +530,7 @@ const setIconStatus = (key, s = Selectors.statuses.wait, isBtn = false) => {
     if (isBtn) {
         if (!icon.classList.contains('btn')) {
             icon.classList.add('btn');
+            icon.classList.add('btn-outline-secondary');
         }
         if (icon.classList.contains('disable')) {
             icon.classList.remove('disable');
@@ -452,6 +541,7 @@ const setIconStatus = (key, s = Selectors.statuses.wait, isBtn = false) => {
         }
         if (icon.classList.contains('btn')) {
             icon.classList.remove('btn');
+            icon.classList.remove('btn-outline-secondary');
         }
     }
     icon.setAttribute('role', isBtn ? 'button' : 'status');

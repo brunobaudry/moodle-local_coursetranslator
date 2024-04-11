@@ -64,13 +64,12 @@ class translate_page implements renderable, templatable {
     private translate_form $mform;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param $course
      * @param $coursedata
      * @param $mlangfilter
      * @param lang_helper $languagepack
-     * @todo MDL-0 no need form if treatment and api call is done by js. Replace by Mustache.
      */
     public function __construct($course, $coursedata, $mlangfilter, lang_helper $languagepack) {
         $this->course = $course;
@@ -100,8 +99,7 @@ class translate_page implements renderable, templatable {
         // Hacky fix but the only way to adjust html...
         // This could be overridden in css and I might look at that fix for the future.
         $renderedform = $this->mform->render();
-        $renderedform = str_replace('col-md-3 col-form-label d-flex pb-0 pr-md-0', 'd-none', $renderedform);
-        $renderedform = str_replace('class="col-md-9 form-inline align-items-start felement"', '', $renderedform);
+        $renderedform = str_replace('col-md-9', 'col-md-12', $renderedform);
         $data->mform = $renderedform;
 
         // Set langs.

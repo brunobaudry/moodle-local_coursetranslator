@@ -59,8 +59,6 @@ $jsconfig = new stdClass();
 $jsconfig = $languagepack->addlangproperties($jsconfig);
 // Prepare course data.
 $jsconfig->courseid = $courseid;
-//$jsconfig->deeplurl = boolval(get_config('local_coursetranslator', 'deeplpro')) ? 'https://api.deepl.com/v2/translate?' :
-//'https://api-free.deepl.com/v2/translate?';
 $jsconfig->debug = $CFG->debug;
 
 $mlangfilter = new filter_multilang2($context, []);

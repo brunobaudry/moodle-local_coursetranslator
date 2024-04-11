@@ -221,10 +221,11 @@ class translate_form extends moodleform {
                 contenteditable='true'
                 data-format='{$item->format}'></div>";
         // Status icon/button.
-        $savetogglebtn = "<span class='btn-outline-secondary disabled' data-status='local-coursetranslator/wait'
+        $savetogglebtn = "<span class='disabled' data-status='local-coursetranslator/wait'
                 role='status' aria-disabled='true'><i class='fa'
                 ></i></span>";
-        // Status surrounding div.
+        $saveasothercheckbox =
+                // Status surrounding div.
         $statusdiv = "<div class='col-1 text-center'
             data-key-validator='$key'>$savetogglebtn</div>";
         // Column 3 Layout.

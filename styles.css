@@ -70,6 +70,9 @@ along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
   margin-left: 0;
   margin-right: 0;
 }
+#page-local-coursetranslator-translate .local-coursetranslator__translation .col-form-label {
+  display: none !important;
+}
 #page-local-coursetranslator-translate .local-coursetranslator__error {
   border: 2px solid #ca3120; /* ui notices */
   border-radius: 6px;
