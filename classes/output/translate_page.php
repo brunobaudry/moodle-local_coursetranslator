@@ -64,14 +64,15 @@ class translate_page implements renderable, templatable {
     private translate_form $mform;
 
     /**
-     * Constructor.
+     * Class Construct
      *
-     * @param $course
-     * @param $coursedata
-     * @param $mlangfilter
+     * @param \stdClass $course
+     * @param array $coursedata
+     * @param \filter_multilang2 $mlangfilter
      * @param lang_helper $languagepack
+     * @throws \moodle_exception
      */
-    public function __construct($course, $coursedata, $mlangfilter, lang_helper $languagepack) {
+    public function __construct(\stdClass $course, array $coursedata, \filter_multilang2 $mlangfilter, lang_helper $languagepack) {
         $this->course = $course;
         $this->coursedata = $coursedata;
         $this->langpacks = $languagepack;
